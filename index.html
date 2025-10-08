@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christopher Buzaid - Computer Science Student</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="public/styles/main.css">
+    <link rel="stylesheet" href="public/styles/animations.css">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-animation">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+    </div>
+    <div class="bg-particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="#home">CB</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#education" class="nav-link">Education</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#experience" class="nav-link">Experience</a></li>
+                <li><a href="#awards" class="nav-link">Awards</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-greeting">Hello, I'm</div>
+            <h1 class="hero-name">Christopher Buzaid</h1>
+            <div class="hero-title">
+                <span class="typing-text" data-words="Computer Science Student,Full-Stack Developer,AI Enthusiast,Problem Solver"></span>
+            </div>
+            <p class="hero-description">Passionate about building innovative software solutions and AI applications. Currently pursuing Computer Science at Monmouth University with a 3.9 GPA.</p>
+            <div class="hero-buttons">
+                <a href="#projects" class="cta-button primary">View My Work</a>
+                <a href="#contact" class="cta-button secondary">Let's Connect</a>
+            </div>
+            <div class="hero-social">
+                <a href="mailto:cjpbuzaid@gmail.com" class="social-icon" title="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="https://linkedin.com/in/christopher-buzaid" target="_blank" rel="noopener noreferrer" class="social-icon" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://github.com/Chris-Buzz" target="_blank" rel="noopener noreferrer" class="social-icon" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="#contact" class="social-icon" title="Contact Me">
+                    <i class="fas fa-phone"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-visual">
+                    <div class="about-image">
+                        <img src="public/images/profile.jpg" alt="Christopher Buzaid" />
+                    </div>
+                </div>
+                <div class="about-text">
+                    <p>Hey! I'm a Computer Science student at Monmouth University, and I love working with AI and building projects that solve real problems. There's something really exciting about taking an idea and turning it into something that actually works.</p>
+                    <p>I'm really into AI and machine learning, web development, and automation. Most of my free time goes into learning new technologies and working on personal projects. Whether it's building an AI assistant or creating a productivity app, I just enjoy the process of making things.</p>
+                    <p>Outside of coding, I'm the president of Club Basketball and a practice player for the Women's Basketball team. It's been a great way to stay active and work with a team toward common goals, which honestly helps a lot with my programming projects too.</p>
+                    <div class="stats-showcase">
+                        <div class="stat-item">
+                            <span class="stat-number">3.9</span>
+                            <span class="stat-label">GPA</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">2027</span>
+                            <span class="stat-label">Graduation</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">4x</span>
+                            <span class="stat-label">Dean's List</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">10+</span>
+                            <span class="stat-label">Projects</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Education</h2>
+            <div class="education-card">
+                <div class="education-header">
+                    <div>
+                        <div class="education-title">Bachelor of Science in Computer Science</div>
+                        <div class="education-school">Monmouth University, West Long Branch, NJ</div>
+                        <div class="education-gpa">GPA: 3.9/4.0</div>
+                    </div>
+                    <div class="education-date">May 2027</div>
+                </div>
+                <div class="coursework">
+                    <h4>Relevant Coursework:</h4>
+                    <p>Data Structures & Algorithms, Advanced Object-Oriented Programming, Full-Stack Software Engineering, Applied Discrete Mathematics, Scripting Languages, Cybersecurity, Advanced Computing, Software Engineering Concepts</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Technical Expertise</h2>
+            <div class="skills-container">
+                <div class="skill-category">
+                    <div class="category-header">
+                        <i class="fas fa-terminal"></i>
+                        <h3>Programming Languages</h3>
+                    </div>
+                    <div class="terminal-container">
+                        <div class="terminal-window">
+                            <div class="terminal-header">
+                                <div class="terminal-controls">
+                                    <span class="terminal-dot red"></span>
+                                    <span class="terminal-dot yellow"></span>
+                                    <span class="terminal-dot green"></span>
+                                </div>
+                                <span class="terminal-title">christopher@portfolio:~$</span>
+                            </div>
+                            <div class="terminal-body">
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">$</span>
+                                    <span class="terminal-command" id="typing-languages">cat languages.txt</span>
+                                </div>
+                                <div id="language-output" class="language-list"></div>
+                                <div class="terminal-line current-line">
+                                    <span class="terminal-prompt">$</span>
+                                    <span class="terminal-cursor">_</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <div class="category-header">
+                        <i class="fas fa-laptop-code"></i>
+                        <h3>Frameworks & Tools</h3>
+                    </div>
+                    <div class="tech-grid">
+                        <div class="tech-item">
+                            <i class="fab fa-react"></i>
+                            <span>React</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-flask"></i>
+                            <span>Flask</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-database"></i>
+                            <span>SQL</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-git-alt"></i>
+                            <span>Git</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-robot"></i>
+                            <span>AI/ML</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <div class="category-header">
+                        <i class="fas fa-users"></i>
+                        <h3>Soft Skills</h3>
+                    </div>
+                    <div class="soft-skills">
+                        <span class="skill-tag">Leadership</span>
+                        <span class="skill-tag">Team Collaboration</span>
+                        <span class="skill-tag">Problem Solving</span>
+                        <span class="skill-tag">Communication</span>
+                        <span class="skill-tag">Project Management</span>
+                        <span class="skill-tag">Adaptability</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Featured Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-dates">October 2024 - Present</div>
+                        <div class="project-title">Planno - AI-Powered Daily Planner</div>
+                        <div class="project-tech">Flask, JavaScript, Gemini API, OpenWeatherMap API, HTML, CSS</div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-description">
+                            <p>• Full-stack web planner app with integrated AI assistant using GPT-4</p>
+                            <p>• Features smart task management, AI-powered suggestions, and progress tracking</p>
+                            <p>• Built with modern React, TypeScript, and deployed on Vercel</p>
+                            <p>• Responsive design with intuitive UI for seamless planning experience</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://planno-eta.vercel.app/" class="project-link" target="_blank" rel="noopener noreferrer">
+                                Live Demo <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            <a href="https://github.com/Chris-Buzz" class="project-link" target="_blank" rel="noopener noreferrer">
+                                View Code <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-dates">January 2025 - Present</div>
+                        <div class="project-title">Buzzy the AI</div>
+                        <div class="project-tech">Python, Flask, Electron, JavaScript, HTML/CSS</div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-description">
+                            <p>• Developed a personalized AI assistant powered by Ollama's Llama3</p>
+                            <p>• Desktop application using Electron, fully functional offline</p>
+                            <p>• Supports multiple user profiles with custom personalities</p>
+                        </div>
+                        <a href="https://github.com/Chris-Buzz" class="project-link" target="_blank" rel="noopener noreferrer">
+                            View on GitHub <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-dates">April 2025 - Present</div>
+                        <div class="project-title">Automated Product Scraper</div>
+                        <div class="project-tech">Python, Selenium</div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-description">
+                            <p>• Python script using Selenium for automated product searches</p>
+                            <p>• Returns results based on ratings and prices</p>
+                            <p>• Implements web scraping with browser automation</p>
+                        </div>
+                        <a href="https://github.com/Chris-Buzz" class="project-link" target="_blank" rel="noopener noreferrer">
+                            View on GitHub <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- More Projects CTA -->
+            <div class="more-projects-cta">
+                <h3>Want to See More?</h3>
+                <p>Check out my other projects and contributions on GitHub</p>
+                <a href="https://github.com/Chris-Buzz" class="cta-button primary" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-github"></i> View All Projects on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Work Experience</h2>
+            <div class="experience-timeline">
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="experience-title">Busser</div>
+                            <div class="experience-company">Danfords Hotel Marina & Spa, Port Jefferson, NY</div>
+                        </div>
+                        <div class="experience-date">May 2024 - August 2025</div>
+                    </div>
+                    <div class="experience-description">
+                        <p>• Elevated guest satisfaction in high-volume restaurant environment</p>
+                        <p>• Accommodated over 500 guests daily during peak summer hours</p>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="experience-title">Camp Counselor</div>
+                            <div class="experience-company">Centereach High School Basketball, Centereach, NY</div>
+                        </div>
+                        <div class="experience-date">June 2023 - August 2023</div>
+                    </div>
+                    <div class="experience-description">
+                        <p>• Coached basketball fundamentals to 50+ children (ages 5–13)</p>
+                        <p>• Developed leadership and communication skills</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Awards Section -->
+    <section id="awards" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Awards & Recognition</h2>
+            <div class="awards-grid">
+                <div class="award-card">
+                    <div class="award-title">Dean's List</div>
+                    <div class="award-institution">Monmouth University</div>
+                    <div class="award-date">Fall 2023</div>
+                </div>
+                <div class="award-card">
+                    <div class="award-title">Dean's List</div>
+                    <div class="award-institution">Monmouth University</div>
+                    <div class="award-date">Spring 2024</div>
+                </div>
+                <div class="award-card">
+                    <div class="award-title">Dean's List</div>
+                    <div class="award-institution">Monmouth University</div>
+                    <div class="award-date">Fall 2024</div>
+                </div>
+                <div class="award-card">
+                    <div class="award-title">Dean's List</div>
+                    <div class="award-institution">Monmouth University</div>
+                    <div class="award-date">Spring 2025</div>
+                </div>
+            </div>
+            
+            <div class="activities-section">
+                <h3 class="activities-title">Activities & Involvement</h3>
+                <div class="activities-grid">
+                    <div class="activity-card">
+                        <div class="activity-title">Club Basketball President</div>
+                        <div class="activity-organization">Monmouth University</div>
+                        <div class="activity-date">September 2023 - Present</div>
+                        <div class="activity-description">Lead team activities for 50+ students, managing logistics and member engagement.</div>
+                    </div>
+                    <div class="activity-card">
+                        <div class="activity-title">Women's Basketball Practice Player</div>
+                        <div class="activity-organization">Monmouth University</div>
+                        <div class="activity-date">September 2023 - Present</div>
+                        <div class="activity-description">Support team preparation by simulating game scenarios in practice sessions.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope contact-icon"></i>
+                        <div class="contact-details">
+                            <strong>Email</strong>
+                            <a href="mailto:cjpbuzaid@gmail.com">cjpbuzaid@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone contact-icon"></i>
+                        <div class="contact-details">
+                            <strong>Phone</strong>
+                            <a href="tel:631-578-2897">631-578-2897</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt contact-icon"></i>
+                        <div class="contact-details">
+                            <strong>Location</strong>
+                            <span>Lake Grove, NY</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-linkedin contact-icon"></i>
+                        <div class="contact-details">
+                            <strong>LinkedIn</strong>
+                            <a href="https://linkedin.com/in/christopher-buzaid" target="_blank" rel="noopener noreferrer">christopher-buzaid</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-github contact-icon"></i>
+                        <div class="contact-details">
+                            <strong>GitHub</strong>
+                            <a href="https://github.com/Chris-Buzz" target="_blank" rel="noopener noreferrer">Chris-Buzz</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h3>Send Me a Message</h3>
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <label for="name">Your Name *</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject *</label>
+                            <input type="text" id="subject" name="subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" rows="6" required></textarea>
+                        </div>
+                        <button type="submit" class="cta-button primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="social-links">
+                    <a href="mailto:cjpbuzaid@gmail.com" class="social-link">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email</span>
+                    </a>
+                    <a href="https://linkedin.com/in/christopher-buzaid" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <i class="fab fa-linkedin"></i>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="https://github.com/Chris-Buzz" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </a>
+                    <a href="tel:631-578-2897" class="social-link">
+                        <i class="fas fa-phone"></i>
+                        <span>Call</span>
+                    </a>
+                </div>
+                <p>&copy; 2025 Christopher Buzaid. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="public/js/main.js"></script>
+</body>
+</html>
