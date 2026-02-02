@@ -1,4 +1,4 @@
-// js/main.js - Complete Portfolio JavaScript
+// js/main.js - Complete Portfolio JavaScript with Enhanced Scroll Animations
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize everything after DOM loads
@@ -23,11 +23,9 @@ function initPortfolio() {
     startInitialAnimations();
     
     // Setup scroll indicator hide on scroll
-    console.log('About to setup scroll indicator');
     setupScrollIndicator();
     
     // Start typing animations
-    console.log('About to setup typing animations');
     setupTypingAnimations();
 }
 
@@ -121,7 +119,7 @@ function setupScrollEffects() {
         // Parallax effect for floating shapes
         document.querySelectorAll('.floating-shape').forEach((shape, index) => {
             const speed = (index + 1) * 0.05;
-            shape.style.transform = `translateY(${scrollY * speed}px) rotate(${scrollY * 0.1}deg)`;
+            shape.style.transform = `translateY(${scrollY * speed}px)`;
         });
         
         ticking = false;
@@ -160,7 +158,7 @@ function updateActiveNavigation() {
     });
 }
 
-// Contact form functionality
+// Contact form functionality with FormSubmit
 function setupContactForm() {
     const contactForm = document.getElementById('contact-form');
     
@@ -184,16 +182,24 @@ function setupContactForm() {
             
             try {
                 // Show loading state
-                submitBtn.textContent = 'Sending...';
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
                 submitBtn.disabled = true;
                 
-                // Try to submit to backend
-                const response = await fetch('/api/contact', {
+                // Using FormSubmit.co - sends directly to your Gmail
+                const response = await fetch('https://formsubmit.co/ajax/cjpbuzaid@gmail.com', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({
+                        name: data.name,
+                        email: data.email,
+                        subject: data.subject,
+                        message: data.message,
+                        _captcha: 'false',
+                        _template: 'table'
+                    })
                 });
                 
                 if (response.ok) {
@@ -204,7 +210,7 @@ function setupContactForm() {
                 }
                 
             } catch (error) {
-                console.log('Backend not available, using mailto fallback');
+                console.log('Using mailto fallback');
                 
                 // Fallback to mailto
                 const mailtoLink = `mailto:cjpbuzaid@gmail.com?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(
@@ -258,7 +264,7 @@ function validateForm(data) {
     return true;
 }
 
-// Create particle system
+// Create enhanced particle system - Fireflies, Embers, and Stars
 function createParticles() {
     const container = document.getElementById('particles');
     if (!container) return;
@@ -266,25 +272,50 @@ function createParticles() {
     // Clear existing particles
     container.innerHTML = '';
     
-    const particleCount = window.innerWidth > 768 ? 30 : 15;
+    // More particles for better effect
+    const fireflyCount = window.innerWidth > 768 ? 30 : 15;
+    const emberCount = window.innerWidth > 768 ? 25 : 12;
+    const starCount = window.innerWidth > 768 ? 40 : 20;
     
-    for (let i = 0; i < particleCount; i++) {
+    // Create fireflies (yellow-green glow)
+    for (let i = 0; i < fireflyCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = (Math.random() * 60 + 20) + '%'; // Middle section
+        particle.style.animationDelay = Math.random() * 12 + 's';
+        particle.style.animationDuration = (Math.random() * 8 + 10) + 's';
+        container.appendChild(particle);
+    }
+    
+    // Create embers (orange-red glow, bottom section)
+    for (let i = 0; i < emberCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = (Math.random() * 60 + 20) + '%'; // Center area
+        particle.style.top = (Math.random() * 30 + 70) + '%'; // Bottom section
+        particle.style.animationDelay = Math.random() * 10 + 's';
+        particle.style.animationDuration = (Math.random() * 5 + 8) + 's';
+        container.appendChild(particle);
+    }
+    
+    // Create stars (white-blue glow, scattered)
+    for (let i = 0; i < starCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         particle.style.left = Math.random() * 100 + '%';
         particle.style.top = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 8 + 's';
-        particle.style.animationDuration = (Math.random() * 6 + 6) + 's';
-        
+        particle.style.animationDelay = Math.random() * 20 + 's';
+        particle.style.animationDuration = (Math.random() * 15 + 15) + 's';
         container.appendChild(particle);
     }
 }
 
-// Scroll animations
+// Enhanced Scroll animations with Intersection Observer
 function setupScrollAnimations() {
     const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        threshold: 0.15,
+        rootMargin: '0px 0px -100px 0px'
     };
     
     const observer = new IntersectionObserver((entries) => {
@@ -293,8 +324,10 @@ function setupScrollAnimations() {
                 entry.target.classList.add('visible');
                 
                 // Animate stats if present
-                if (entry.target.classList.contains('stats-showcase')) {
-                    animateStats(entry.target);
+                if (entry.target.classList.contains('stats-showcase') || entry.target.querySelector('.stats-showcase')) {
+                    setTimeout(() => {
+                        animateStats(entry.target.querySelector('.stats-showcase') || entry.target);
+                    }, 300);
                 }
             }
         });
@@ -331,11 +364,15 @@ function setupSkillBars() {
 
 // Animate statistics
 function animateStats(container) {
+    if (!container) return;
+    
     const statItems = container.querySelectorAll('.stat-item');
     
     statItems.forEach((item, index) => {
         setTimeout(() => {
             const numberEl = item.querySelector('.stat-number');
+            if (!numberEl) return;
+            
             const finalValue = numberEl.textContent;
             
             if (finalValue.includes('.')) {
@@ -396,37 +433,6 @@ function startInitialAnimations() {
         const words = typingElement.getAttribute('data-words').split(',');
         typeWriter(typingElement, words);
     }
-    
-    // Add visible class to already visible sections
-    document.querySelectorAll('.fade-in').forEach(el => {
-        if (isElementInViewport(el)) {
-            el.classList.add('visible');
-        }
-    });
-}
-
-// Setup skill bars
-function setupSkillBars() {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Handle skill bars
-                const skillBars = entry.target.querySelectorAll('.skill-progress');
-                skillBars.forEach((bar, index) => {
-                    setTimeout(() => {
-                        const width = bar.getAttribute('data-width');
-                        if (width) {
-                            bar.style.width = width;
-                        }
-                    }, index * 200);
-                });
-            }
-        });
-    }, { threshold: 0.3 });
-    
-    document.querySelectorAll('.skill-category').forEach(category => {
-        observer.observe(category);
-    });
 }
 
 // Typing animation
@@ -531,7 +537,6 @@ function showNotification(message, type = 'info') {
 // Setup scroll indicator to hide on scroll
 function setupScrollIndicator() {
     const scrollIndicator = document.querySelector('.scroll-indicator');
-    console.log('Setting up scroll indicator:', scrollIndicator);
     if (!scrollIndicator) return;
     
     let hasScrolled = false;
@@ -539,7 +544,6 @@ function setupScrollIndicator() {
     window.addEventListener('scroll', () => {
         if (!hasScrolled && window.scrollY > 100) {
             hasScrolled = true;
-            console.log('Hiding scroll indicator');
             scrollIndicator.style.opacity = '0';
             scrollIndicator.style.transform = 'translateX(-50%) translateY(20px)';
             setTimeout(() => {
@@ -551,66 +555,16 @@ function setupScrollIndicator() {
 
 // Setup typing animations
 function setupTypingAnimations() {
-    console.log('Setting up typing animations');
-    // Type out "Computer Science Student" on load
-    typeHeroTitle();
-    
     // Type out programming languages in the terminal
     setTimeout(() => {
         typeProgrammingLanguages();
     }, 2000);
 }
 
-// Type hero title
-function typeHeroTitle() {
-    const typingElement = document.querySelector('.typing-text');
-    if (!typingElement) return;
-    
-    const words = ['Computer Science Student', 'Full-Stack Developer', 'AI Enthusiast', 'Problem Solver'];
-    let wordIndex = 0;
-    let isTyping = false;
-    
-    function typeWord() {
-        if (isTyping) return;
-        isTyping = true;
-        
-        const currentWord = words[wordIndex];
-        let charIndex = 0;
-        typingElement.textContent = '';
-        
-        function addChar() {
-            if (charIndex < currentWord.length) {
-                typingElement.textContent = currentWord.substring(0, charIndex + 1);
-                charIndex++;
-                setTimeout(addChar, 100);
-            } else {
-                setTimeout(deleteWord, 2500);
-            }
-        }
-        
-        function deleteWord() {
-            if (typingElement.textContent.length > 0) {
-                typingElement.textContent = typingElement.textContent.substring(0, typingElement.textContent.length - 1);
-                setTimeout(deleteWord, 50);
-            } else {
-                isTyping = false;
-                wordIndex = (wordIndex + 1) % words.length;
-                setTimeout(typeWord, 500);
-            }
-        }
-        
-        addChar();
-    }
-    
-    setTimeout(typeWord, 200);
-}
-
 // Type programming languages in terminal
 function typeProgrammingLanguages() {
     const outputDiv = document.getElementById('language-output');
     const typingCommand = document.getElementById('typing-languages');
-    
-    console.log('Type programming languages - outputDiv:', outputDiv, 'typingCommand:', typingCommand);
     
     if (!outputDiv || !typingCommand) return;
     
@@ -697,5 +651,40 @@ window.addEventListener('resize', () => {
     // Recreate particles on resize
     createParticles();
 });
+
+// Enhanced mouse parallax effect for aurora that follows cursor
+let mouseX = 0.5;
+let mouseY = 0.5;
+let currentX = 0.5;
+let currentY = 0.5;
+
+document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX / window.innerWidth;
+    mouseY = e.clientY / window.innerHeight;
+});
+
+// Smooth animation loop for aurora following
+function animateAurora() {
+    // Smooth interpolation for natural movement
+    currentX += (mouseX - currentX) * 0.05;
+    currentY += (mouseY - currentY) * 0.05;
+    
+    const shapes = document.querySelectorAll('.floating-shape');
+    
+    shapes.forEach((shape, index) => {
+        const depth = (index + 1) * 30; // Different depths for each aurora layer
+        const moveX = (currentX - 0.5) * depth;
+        const moveY = (currentY - 0.5) * depth;
+        
+        // Apply the transform while keeping the animation
+        const currentTransform = shape.style.transform || '';
+        shape.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+    
+    requestAnimationFrame(animateAurora);
+}
+
+// Start the aurora animation
+animateAurora();
 
 console.log('Portfolio JavaScript loaded successfully');
