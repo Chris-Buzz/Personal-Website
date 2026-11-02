@@ -1,99 +1,78 @@
-import { useEffect, useRef, useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import IconSprite from './components/IconSprite';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Buzzy from './components/Buzzy';
-import RouteVeil from './components/RouteVeil';
-
+import Guide from './components/Guide';
+import Ticker from './components/Ticker';
 import Home from './pages/Home';
 import Work from './pages/Work';
 import ProjectDetail from './pages/ProjectDetail';
-import Hive from './pages/Hive';
-import Thoughts from './pages/Thoughts';
 import About from './pages/About';
+import NotFound from './pages/NotFound';
+import { projectBySlug } from './data/content';
 
-const ROUTE_KEY: Record<string, string> = {
-  '/': 'home',
-  '/work': 'work',
-  '/hive': 'hive',
-  '/thoughts': 'thoughts',
-  '/about': 'about',
-};
-const routeKeyOf = (pathname: string) =>
-  ROUTE_KEY[pathname] ?? (pathname.startsWith('/work/') ? 'work' : 'home');
+const TITLES: Record<string, string> = { '/work': 'Work', '/about': 'About' };
 
-// The veil sweep (see .route-veil in global.css) fully covers the viewport
-// between ~42% and ~56% of its 820ms run. Swap the rendered page while hidden.
-const VEIL_SWAP_MS = 400;
-const VEIL_DONE_MS = 880;
+function titleFor(path: string) {
+  if (path === '/') return 'Chris Buzaid';
+  const slug = path.match(/^\/work\/([a-z0-9-]+)$/)?.[1];
+  const name = (slug && projectBySlug(slug)?.title) || TITLES[path] || 'Not found';
+  return `${name} · Chris Buzaid`;
+}
 
 export default function App() {
-  const location = useLocation();
-  // What <Routes> actually renders. Held back during the veil sweep so the
-  // old page stays up until the screen is covered — no early flash of the
-  // destination page.
-  const [shown, setShown] = useState(location);
-  const shownKey = useRef(location.pathname + location.search);
-  const veilRef = useRef<HTMLDivElement>(null);
-  const first = useRef(true);
+  const { pathname } = useLocation();
+  const [announce, setAnnounce] = useState('');
+  const shown = useRef(pathname);
 
+  useLayoutEffect(() => {
+    document.title = titleFor(pathname);
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  // After a client-side navigation, move focus to the new page and announce its title.
   useEffect(() => {
-    const key = location.pathname + location.search;
-
-    const swap = () => {
-      shownKey.current = key;
-      setShown(location);
-      document.body.dataset.route = routeKeyOf(location.pathname);
-      window.scrollTo(0, 0);
-    };
-
-    if (first.current) {
-      first.current = false;
-      document.body.dataset.route = routeKeyOf(location.pathname);
-      return;
-    }
-    if (key === shownKey.current) return;
-
-    const veil = veilRef.current;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!veil || reduce) {
-      swap();
-      return;
-    }
-
-    veil.classList.remove('run');
-    // force reflow so the animation restarts
-    void veil.offsetWidth;
-    veil.classList.add('run');
-    const tSwap = setTimeout(swap, VEIL_SWAP_MS);
-    const tDone = setTimeout(() => veil.classList.remove('run'), VEIL_DONE_MS);
-    return () => {
-      clearTimeout(tSwap);
-      clearTimeout(tDone);
-    };
-  }, [location]);
+    if (shown.current === pathname) return;
+    shown.current = pathname;
+    document.getElementById('main')?.focus({ preventScroll: true });
+    setAnnounce(titleFor(pathname));
+  }, [pathname]);
 
   return (
     <>
       <IconSprite />
-      <RouteVeil ref={veilRef} />
+      <a
+        className="skip-link"
+        href="#main"
+        onClick={(e) => {
+          e.preventDefault();
+          document.getElementById('main')?.focus();
+        }}
+      >
+        Skip to content
+      </a>
+      <Ticker />
       <Header />
-
-      <main>
-        <Routes location={shown}>
-          <Route path="/" element={<Home />} />
-          <Route path="/work" element={<Work />} />
-          <Route path="/work/:slug" element={<ProjectDetail />} />
-          <Route path="/hive" element={<Hive />} />
-          <Route path="/thoughts" element={<Thoughts />} />
-          <Route path="/about" element={<About />} />
-          <Route path="*" element={<Home />} />
-        </Routes>
+      <main id="main" tabIndex={-1}>
+        <div key={pathname} className="route">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/work" element={<Work />} />
+            <Route path="/work/digby" element={<Navigate to="/work/brain" replace />} />
+            <Route path="/work/:slug" element={<ProjectDetail />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/hive" element={<Navigate to="/work" replace />} />
+            <Route path="/thoughts" element={<Navigate to="/work" replace />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </main>
-
       <Footer />
-      <Buzzy />
+      <Guide />
+      <p className="sr-only" aria-live="polite">
+        {announce}
+      </p>
     </>
   );
 }

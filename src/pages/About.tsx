@@ -1,115 +1,111 @@
-import Reveal from '../components/Reveal';
-import Photo from '../components/Photo';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Icon } from '../components/IconSprite';
-import { useBuzzy } from '../context/BuzzyContext';
-import { PROFILE, ABOUT_FACTS, CHAPTERS, EDUCATION, EXPERIENCE, AWARDS } from '../data/content';
-
-const ChapterHex = ({ n }: { n: string }) => (
-  <div className="c2-hex">
-    <svg viewBox="0 0 40 44">
-      <path d="M20 2L37 12v20L20 42 3 32V12L20 2z" style={{ fill: 'var(--orange-soft)', stroke: 'var(--orange)' }} strokeWidth={1.5} />
-    </svg>
-    <span>{n}</span>
-  </div>
-);
+import { ABOUT, BEYOND, EXPERIENCE, PAPER, PROFILE } from '../data/content';
 
 export default function About() {
-  const { ask } = useBuzzy();
+  const [photoOk, setPhotoOk] = useState(true);
+  const { state } = useLocation();
+
+  // Proof links on Home pass { anchor } so they land on the matching experience entry.
+  useEffect(() => {
+    const anchor = (state as { anchor?: string } | null)?.anchor;
+    if (anchor) document.getElementById(anchor)?.scrollIntoView({ block: 'start' });
+  }, [state]);
   return (
-    <div className="page" id="page-about">
+    <>
       <div className="wrap">
-        <div className="page-hero">
-          <div className="kicker">About</div>
-          <h1 className="display">
-            The longer <em>story.</em>
-          </h1>
-          <p className="lede">Computer Science student, club president, practice player, builder of AI things. Here's the longer version.</p>
-        </div>
-
-        <div className="about-grid">
-          <Reveal as="aside" className="profile-card">
-            <div className="polaroid" style={{ position: 'relative' }}>
-              <div className="pol-tape" />
-              <Photo src={PROFILE.photo} fallback={PROFILE.photoFallback} alt={PROFILE.name} />
-              <div className="pol-caption">
-                <span className="pc-name">{PROFILE.name}</span>
-                <span className="pc-loc">NY</span>
-              </div>
-            </div>
-            <div className="profile-meta">
-              {ABOUT_FACTS.map((f) => (
-                <div className="fact" key={f.k}>
-                  <span className="f-k">{f.k}</span>
-                  <span className="f-v" style={f.accent ? { color: 'var(--orange-deep)' } : undefined}>
-                    {f.v}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className="pc-actions">
-              <a className="btn btn-primary" href={`mailto:${PROFILE.email}`}>
-                <Icon name="mail" style={{ width: 15, height: 15 }} /> Email me
+        <header className="about-head">
+          <div className="text">
+            <p className="label">About</p>
+            <h1>Hi, I’m Chris.</h1>
+            <p className="lede">{ABOUT.lede}</p>
+            <div className="hero-actions">
+              <a className="btn btn-solid" href={`mailto:${PROFILE.email}`}>
+                Email me
               </a>
-              <button className="btn btn-ghost" onClick={() => ask('How can I get in touch with Chris?')}>
-                Ask Buzzy
-              </button>
+              <a className="btn btn-line" href={PROFILE.github} target="_blank" rel="noreferrer">
+                GitHub <Icon name="ext" />
+              </a>
+              <a className="btn btn-line" href={PROFILE.linkedin} target="_blank" rel="noreferrer">
+                LinkedIn <Icon name="ext" />
+              </a>
             </div>
-          </Reveal>
-
-          <div>
-            <div className="chapters">
-              {CHAPTERS.map((c) => (
-                <Reveal className="chapter2" key={c.n}>
-                  <ChapterHex n={c.n} />
-                  <div className="c2-kicker">{c.k}</div>
-                  <h3>{c.h}</h3>
-                  <p>{c.p}</p>
-                  <div className="c2-tags">
-                    {c.tags.map((t) => (
-                      <span className="tag" key={t}>{t}</span>
-                    ))}
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-
-            <Reveal className="about-sec-title">Education</Reveal>
-            <Reveal className="edu-card">
-              <div className="e-top">
-                <h4>{EDUCATION.title}</h4>
-                <span className="e-date">{EDUCATION.date}</span>
-              </div>
-              <p className="e-sub">{EDUCATION.sub}</p>
-              <div className="e-tags">
-                {EDUCATION.courses.map((c) => (
-                  <span className="tag" key={c}>{c}</span>
-                ))}
-              </div>
-            </Reveal>
-
-            <Reveal className="about-sec-title">Experience</Reveal>
-            <Reveal>
-              {EXPERIENCE.map((x) => (
-                <div className="xp-row" key={x.role}>
-                  <div>
-                    <h5>{x.role}</h5>
-                    <span className="x-org">{x.org}</span>
-                  </div>
-                  <span className="x-date">{x.date}</span>
-                  <p className="x-note">{x.note}</p>
-                </div>
-              ))}
-            </Reveal>
-
-            <Reveal className="about-sec-title">Recognition</Reveal>
-            <Reveal className="award-chips">
-              {AWARDS.map((a) => (
-                <span className="tag" key={a}>{a}</span>
-              ))}
-            </Reveal>
           </div>
-        </div>
+          {photoOk && (
+            <figure className="about-photo">
+              <img
+                src={PROFILE.photo}
+                alt="Chris Buzaid speaking into a microphone at an event, in a navy suit and a light bow tie."
+                width={5472}
+                height={3648}
+                decoding="async"
+                onError={() => setPhotoOk(false)}
+              />
+              <figcaption className="label">{PROFILE.location}</figcaption>
+            </figure>
+          )}
+        </header>
+
+        <dl className="facts">
+          {ABOUT.facts.map((f) => (
+            <div key={f.k}>
+              <dt className="label">{f.k}</dt>
+              <dd>{f.v}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-    </div>
+
+      <section className="section wrap" aria-labelledby="xp-title">
+        <div className="section-head">
+          <p className="label">01 / Experience</p>
+          <h2 className="title" id="xp-title">
+            Where I have done the work.
+          </h2>
+        </div>
+        <ol className="xp">
+          {EXPERIENCE.map((x) => (
+            <li key={x.org} id={x.org === 'IBM' ? 'ibm' : undefined}>
+              <p className="xp-when label">{x.date}</p>
+              <div className="xp-what">
+                <h3>{x.org}</h3>
+                <p>{x.role}</p>
+                <p>{x.place}</p>
+              </div>
+              {x.points.length > 0 && (
+                <ul className="xp-points">
+                  {x.points.map((pt) => (
+                    <li key={pt}>{pt}</li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="section wrap" aria-labelledby="paper-title">
+        <div className="paper">
+          <p className="label paper-label">02 / Research</p>
+          <div className="paper-text">
+            <h2 id="paper-title">{PAPER.title}</h2>
+            <p>
+              {PAPER.authors}. {PAPER.venue}. {PAPER.id}.
+            </p>
+          </div>
+          <a className="btn btn-line paper-link" href={PAPER.href} target="_blank" rel="noopener noreferrer">
+            Read the paper <Icon name="ext" />
+          </a>
+        </div>
+      </section>
+
+      <section className="section wrap" aria-label="Beyond the code">
+        <div className="beyond-row">
+          <p className="label beyond-label">03 / Beyond the code</p>
+          <p className="beyond">{BEYOND}</p>
+        </div>
+      </section>
+    </>
   );
 }

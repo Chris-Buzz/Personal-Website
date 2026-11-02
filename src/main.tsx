@@ -3,16 +3,16 @@ import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import App from './App';
 import { ThemeProvider } from './context/ThemeContext';
-import { BuzzyProvider } from './context/BuzzyContext';
-import './styles/global.css';
+import { GuideProvider } from './context/GuideContext';
+import './styles/site.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <HashRouter>
+    <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <ThemeProvider>
-        <BuzzyProvider>
+        <GuideProvider>
           <App />
-        </BuzzyProvider>
+        </GuideProvider>
       </ThemeProvider>
     </HashRouter>
   </React.StrictMode>

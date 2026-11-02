@@ -2,8 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { nodes, edges } from './hive';
 import { PROJECTS } from './content';
 
-// Same transform HeroCinematic uses to turn a node label into a /work?p= slug.
-const slugOf = (label: string) => label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
 describe('hive graph integrity', () => {
   it('every edge references a real node', () => {
@@ -28,15 +26,15 @@ describe('hive graph integrity', () => {
     nodes.forEach((n) => expect(n.desc.length, `"${n.label}" missing desc`).toBeGreaterThan(10));
   });
 
-  // The home constellation's clickable chips navigate to /work?p=<slugified label>.
-  // If a project node exists in the Hive, the Work page must have a matching row.
-  it('every hive project node maps to a Work page project slug', () => {
-    const workSlugs = new Set(PROJECTS.map((p) => p.slug));
-    nodes
-      .filter((n) => n.type === 'project')
-      .forEach((n) => {
-        expect(workSlugs.has(slugOf(n.label)), `hive project "${n.label}" (slug "${slugOf(n.label)}") has no Work page row — chips would deep-link to nothing`).toBe(true);
-      });
+  // Every project node must be a real project page, and every project must be known to the guide.
+  it('project nodes and Work page projects match one to one', () => {
+    const titles = PROJECTS.map((p) => p.title).sort();
+    const projectNodes = nodes.filter((n) => n.type === 'project').map((n) => n.label).sort();
+    expect(projectNodes).toEqual(titles);
+  });
+
+  it('never mentions material kept off the site', () => {
+    nodes.forEach((n) => expect(`${n.label} ${n.desc}`, `"${n.label}"`).not.toMatch(/part-time|Overlook|Tally/i));
   });
 
   it('no orphan project nodes (every project connects to something)', () => {

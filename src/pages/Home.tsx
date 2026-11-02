@@ -1,94 +1,117 @@
 import { Link } from 'react-router-dom';
-import HeroCinematic from '../three/HeroCinematic';
-import Reveal from '../components/Reveal';
-import Photo from '../components/Photo';
+import { useGuide } from '../context/GuideContext';
 import { Icon } from '../components/IconSprite';
-import { useBuzzy } from '../context/BuzzyContext';
-import { STORY_BEATS, NEXT_CARDS, INTRO, PROFILE } from '../data/content';
+import WorkRows from '../components/WorkRows';
+import { CONTEXT, HERO, NOW, PRINCIPLES, PROFILE } from '../data/content';
 
 export default function Home() {
-  const { ask } = useBuzzy();
+  const { ask } = useGuide();
   return (
-    <div className="page" id="page-home">
-      <HeroCinematic />
-
-      <div className="home-after">
-        {/* OPENER — the identity moment right after the tunnel lands */}
-        <section className="home-intro">
-          <div className="wrap intro-grid">
-            <Reveal className="intro-copy">
-              <div className="kicker">{INTRO.kicker}</div>
-              <h2 className="display">
-                {INTRO.h} <em>{INTRO.hEm}</em>
-              </h2>
-              <p className="lede">{INTRO.sub}</p>
-              <div className="intro-chips">
-                {INTRO.chips.map((c) => (
-                  <span className="intro-chip" key={c.k}>
-                    <b>{c.k}</b>
-                    {c.v}
+    <>
+      <div className="wrap">
+        <section className="hero" aria-labelledby="hero-name">
+          <div className="hero-main">
+            <p className="label">{HERO.eyebrow}</p>
+            <h1 className="name" id="hero-name">
+              <span className="name-line">
+                <span>Chris</span>
+              </span>
+              <span className="name-row">
+                <span className="name-line">
+                  <span>Buzaid</span>
+                </span>
+                <span className="land" aria-hidden="true">
+                  <span className="land-dot" />
+                  <span className="land-bee">
+                    <svg viewBox="0 0 32 32">
+                      <use href="#i-bee" />
+                    </svg>
                   </span>
-                ))}
-              </div>
-              <div className="intro-ctas">
-                <Link to="/work" className="btn btn-primary">
-                  Browse the work <Icon name="arrow" />
-                </Link>
-                <button className="btn btn-ghost" onClick={() => ask('Give me the tour — where should I start?')}>
-                  Meet Digby <Icon name="spark" />
-                </button>
-                <a className="btn btn-ghost" href={`mailto:${PROFILE.email}`}>
-                  Get in touch <Icon name="mail" />
-                </a>
-              </div>
-            </Reveal>
-            <Reveal className="intro-portrait">
-              <Photo src={PROFILE.photo} fallback={PROFILE.photoFallback} alt={PROFILE.name} className="intro-ph" />
-              <span className="intro-cap">{INTRO.photoCaption}</span>
-            </Reveal>
-          </div>
-        </section>
-        {/* STORY — quiet editorial list: number, heading, one paragraph */}
-        <section className="home-story">
-          <div className="wrap story-inner">
-            <div className="kicker">The short version</div>
-            <h2 className="display">
-              How I got <em>here.</em>
-            </h2>
-            <div className="story-list">
-              {STORY_BEATS.map((b) => (
-                <Reveal as="article" className="story-item" key={b.n}>
-                  <span className="si-num">{b.n}</span>
-                  <div className="si-body">
-                    <div className="si-k">{b.k}</div>
-                    <h3>{b.h}</h3>
-                    <p>{b.p}</p>
-                  </div>
-                </Reveal>
-              ))}
+                </span>
+              </span>
+            </h1>
+            <p className="hero-lead">{HERO.lead}</p>
+            <p className="hero-detail">{HERO.detail}</p>
+            <div className="hero-actions">
+              <Link className="btn btn-solid" to="/work">
+                See the work <Icon name="arrow" />
+              </Link>
+              <button className="btn btn-line" onClick={() => ask('What should I look at first?')}>
+                <Icon name="chat" /> Ask the guide
+              </button>
+              <a className="btn btn-line" href={`mailto:${PROFILE.email}`}>
+                Email me
+              </a>
             </div>
           </div>
+
+          <aside className="now" aria-labelledby="now-title">
+            <div className="now-head">
+              <h2 id="now-title">Now</h2>
+              <span>{NOW.when}</span>
+            </div>
+            {NOW.items.map((n) => (
+              <Link key={n.to} to={n.to}>
+                <strong>{n.title}</strong>
+                <span>{n.body}</span>
+                <Icon name="arrow" />
+              </Link>
+            ))}
+          </aside>
         </section>
 
-        <div className="wrap">
-          <Reveal className="next-head">
-            <h2>Have a look around.</h2>
-            <p>FOUR WAYS IN</p>
-          </Reveal>
-          <div className="next-grid">
-            {NEXT_CARDS.map((c) => (
-              <Reveal as={Link} to={c.to} className="next-card" key={c.to}>
-                <span className="nc-num">{c.num}</span>
-                <h3>{c.title}</h3>
-                <p>{c.body}</p>
-                <span className="nc-go">
-                  {c.go} <Icon name="arrow" />
-                </span>
-              </Reveal>
-            ))}
-          </div>
-        </div>
+        <dl className="context">
+          {CONTEXT.map((c) => (
+            <div key={c.k}>
+              <dt className="label">{c.k}</dt>
+              <dd>{c.v}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-    </div>
+
+      <section className="section wrap" aria-labelledby="how-title">
+        <div className="section-head">
+          <p className="label">01 / How I work</p>
+          <h2 className="title" id="how-title">
+            Four habits, and where each one shows up.
+          </h2>
+        </div>
+        <ol className="ledger">
+          {PRINCIPLES.map((p) => (
+            <li key={p.key}>
+              <div className="ledger-key">
+                <span className="label">{p.key}</span>
+              </div>
+              <div className="ledger-claim">
+                <h3>{p.h}</h3>
+                <p>{p.why}</p>
+              </div>
+              <div className="ledger-proof">
+                {p.proof.map((pr) => (
+                  <Link className="proof" key={pr.src + pr.lead} to={pr.to} state={pr.src === 'IBM' ? { anchor: 'ibm' } : undefined}>
+                    <span className="label">{pr.src}</span>
+                    <span>
+                      <b>{pr.lead}</b> {pr.text}
+                    </span>
+                    <Icon name="arrow" />
+                  </Link>
+                ))}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="section wrap" aria-labelledby="work-title">
+        <div className="section-head">
+          <p className="label">02 / Selected work</p>
+          <h2 className="title" id="work-title">
+            What I am building, and where each stands.
+          </h2>
+        </div>
+        <WorkRows />
+      </section>
+    </>
   );
 }

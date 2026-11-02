@@ -1,476 +1,477 @@
 // All page copy lives here so pages stay thin and data-driven.
+// Facts were checked against Chris's notes, repos and the Brain eval on 2026-11-02.
+// Add a date, number or claim only with a source. GTS appears only as the AI Research
+// Intern role and dates (Chris, 2026-11-02), never a description of the work or the
+// current part-time role. Left off on purpose: plans after graduation, Overlook Golf
+// Center (an unpaid pitch), Tally, Murmur, the resume PDF.
 
 export const PROFILE = {
   name: 'Christopher Buzaid',
+  short: 'Chris Buzaid',
   email: 'cjpbuzaid@gmail.com',
   github: 'https://github.com/Chris-Buzz',
   githubHandle: 'Chris-Buzz',
-  linkedin: 'https://linkedin.com/in/christopher-buzaid',
-  linkedinHandle: 'christopher-buzaid',
-  // TODO(assets): replace with a local import from src/assets/.
+  linkedin: 'https://www.linkedin.com/in/christopher-buzaid',
   photo: 'https://chrisbuzaid.dev/public/images/profile.jpg',
-  photoFallback: 'https://github.com/Chris-Buzz.png',
-  status: 'Open to internships',
-  availabilityChip: 'OPEN TO SUMMER 2026 INTERNSHIPS',
+  location: 'Monmouth County, NJ',
+  graduation: 'December 2026',
 };
 
 export const NAV = [
-  { to: '/', label: 'Home' },
-  { to: '/work', label: 'Work' },
-  { to: '/hive', label: 'The Hive' },
-  { to: '/thoughts', label: 'Thoughts' },
-  { to: '/about', label: 'About' },
+  { to: '/work', label: 'Work', icon: 'grid' },
+  { to: '/about', label: 'About', icon: 'user' },
 ];
 
-export const NEXT_CARDS = [
-  { to: '/work', num: '01 — WORK', title: "Eight things I've built", body: 'Planno, LearnAI, Digby, CyberGame and more — each one opens into the full story.', go: 'Browse projects' },
-  { to: '/hive', num: '02 — THE HIVE', title: 'My brain, as a graph', body: 'Every project, post, and skill as one living graph — the same one Digby reads.', go: 'Enter the Hive' },
-  { to: '/thoughts', num: '03 — THOUGHTS', title: 'Notes from the build', body: 'Notes on AI, RAG, and what the court taught me about shipping.', go: 'Read the writing' },
-  { to: '/about', num: '04 — ABOUT', title: 'The story behind it', body: 'Four chapters, one university, fifty teammates, and a 3.9.', go: 'Read the story' },
-];
-
-// Home opener — the identity moment right after the tunnel lands.
-// NOTE(intake): voice pass pending — refine wording via PORTFOLIO-INTAKE.md.
-export const INTRO = {
-  kicker: 'More about me',
-  h: 'I like big projects',
-  hEm: 'and good teammates.',
-  sub: "The short version: I pick projects slightly too big for me, figure them out, and try to be the kind of teammate people want around while I do it. Everything on this site is real and shipped — and Digby can answer questions about any of it.",
-  chips: [
-    { k: 'School', v: "Monmouth CS '27" },
-    { k: 'GPA', v: '3.9 / 4.0' },
-    { k: 'Leads', v: '50+ club athletes' },
-    { k: 'Status', v: 'Open — Summer 2026 internships' },
-  ],
-  photoCaption: 'LAKE GROVE, NY · MONMOUTH U',
+/** The thin bar above the header. It hides itself from `until` on, so stale news never ships. */
+export const NEWS = {
+  text: 'LearnAI paper at SIGCSE Virtual 2026, live session November 12 to 15.',
+  link: { label: 'Read it', href: 'https://arxiv.org/abs/2608.19164' },
+  until: '2026-11-16',
 };
 
-// Home story band ("Four bets. One thread.")
-export const STORY_BEATS = [
-  { n: '01', k: 'The Spark', h: 'It started with one program that worked', p: "The first program I wrote actually ran, and that was it — I was in. Now it's CS at Monmouth with a 3.9 and four straight semesters of Dean's List." },
-  { n: '02', k: 'The Build', h: "Then I couldn't stop building", p: 'Planno gets opened most mornings. LearnAI took real bookings and payments. Digby reads my notes back to me. Every build taught the next one.' },
-  { n: '03', k: 'The Court', h: 'Basketball taught me the people part', p: "I run a 50-person basketball club and practice against the Women's team so they get better, not me. Turns out that's most of what leading is." },
-  { n: '04', k: 'The Hive', h: 'Now it all lives in one place', p: 'Everything I build lands in one graph — the Hive — and Digby answers questions from it, with receipts. Poke around. Ask him things.' },
+/* -- home --------------------------------------------------------------- */
+
+export const HERO = {
+  eyebrow: 'Solo developer · Computer science at Monmouth University',
+  lead: 'I build AI people can rely on.',
+  detail:
+    'My own products, plus websites and tools for small businesses and family who don’t have them. Each one fits the tools people already use, gets measured before anyone trusts it, and keeps data where it belongs.',
+};
+
+export const NOW = {
+  when: 'November 2026',
+  items: [
+    { to: '/work/learnai', title: 'LearnAI paper', body: 'Co-authored, at SIGCSE Virtual 2026. Live session November 12 to 15.' },
+    { to: '/work/brain', title: 'Brain', body: 'One memory for every AI tool I use, measured with a 36-case recall test.' },
+    { to: '/work/buzzoff', title: 'Buzz Off', body: 'My senior project, a party game where phones are the controllers.' },
+  ],
+};
+
+export const CONTEXT = [
+  { k: 'Building', v: 'Brain, Buzz Off, Planno' },
+  { k: 'Research', v: 'LearnAI, Monmouth University' },
+  { k: 'Previously', v: 'IBM z/OSMF, summer 2026' },
+  { k: 'Based in', v: 'Monmouth County, NJ' },
 ];
 
-export type ShotKind = 'planno' | 'buzzy' | 'scraper' | 'graph' | 'learnai' | 'digby' | 'cyber' | 'claudebot';
-
-export interface Project {
-  num: string;
-  /** anchor id — /work?p=<slug> scrolls to this project */
-  slug: string;
-  badge: string;
-  badgeLive?: boolean;
-  date: string;
-  title: string;
-  desc: string;
-  tags: string[];
-  links: { label: string; href?: string; icon: 'ext' | 'github' | 'arrow' | 'doc'; ask?: string; muted?: boolean }[];
-  shot: ShotKind;
+export interface Proof {
+  src: string;
+  /** the evidence itself, set in bold at the start of the line */
+  lead: string;
+  text: string;
+  to: string;
 }
 
-// NOTE: dates for LearnAI/Digby are approximate (from repo activity) — confirm
-// via PORTFOLIO-INTAKE.md, along with live URLs and per-repo GitHub links.
-export const PROJECTS: Project[] = [
+export interface Principle {
+  key: string;
+  h: string;
+  why: string;
+  proof: Proof[];
+}
+
+export const PRINCIPLES: Principle[] = [
   {
-    num: '01', slug: 'learnai', badge: 'Live', badgeLive: true, date: '2025 — PRESENT', title: 'LearnAI',
-    desc: 'A full AI consulting platform: book 1-on-1 sessions, browse the project showcase, pay through Stripe, sign in with Google or Microsoft. Ships with a Chrome extension that upgrades your prompts on any AI site. React front, FastAPI back, Supabase under it all.',
-    tags: ['React', 'FastAPI', 'Supabase', 'Stripe', 'Claude', 'Chrome Extension'],
-    links: [
-      { label: 'Live — lainow.com', href: 'https://www.lainow.com', icon: 'ext' },
-      { label: 'Ask Digby about it', icon: 'arrow', ask: 'What is LearnAI?', muted: true },
+    key: 'Integration',
+    h: 'Put AI where the work already happens.',
+    why: 'A tool in a separate tab gets forgotten. It has to show up inside the editor, the test suite or the chat people already use.',
+    proof: [
+      { src: 'IBM', lead: 'A custom mode for Bob,', text: 'IBM’s AI coding agent, that walks developers through writing functional verification tests.', to: '/about' },
+      { src: 'Brain', lead: 'One memory', text: 'gathered from Claude Code, Codex, Cursor, Antigravity and Gemini, handed back to whichever one I use.', to: '/work/brain' },
     ],
-    shot: 'learnai',
   },
   {
-    num: '02', slug: 'digby', badge: 'Flagship', date: '2026 — PRESENT', title: 'Digby',
-    desc: "A local-first AI second brain. Your notes live as markdown on disk; Digby indexes them into a knowledge graph that builds itself, answers questions over it with citations, and exposes it all over MCP so Claude Desktop or Cursor can read your vault too. One Tauri desktop app, fully on-device. He's also the assistant on this site.",
-    tags: ['Tauri', 'React', 'FastAPI', 'SQLite', 'Ollama', 'MCP', 'RAG'],
-    links: [
-      { label: 'Source', href: 'https://github.com/Chris-Buzz', icon: 'github' },
-      { label: 'Talk to Digby', icon: 'arrow', ask: 'Tell me about Digby', muted: true },
+    key: 'Evaluation',
+    h: 'Measure it before trusting it.',
+    why: 'A demo that worked once proves very little. A fixed test set shows whether a change helped or only felt like it did.',
+    proof: [
+      { src: 'Brain', lead: '81.3% to 100%', text: 'hit in the top 4 on a 36-case recall test. Graph RAG scored lower and stayed out.', to: '/work/brain' },
+      { src: 'IBM', lead: 'Functional verification tests', text: 'for the z/OSMF REST APIs.', to: '/about' },
     ],
-    shot: 'digby',
   },
   {
-    num: '03', slug: 'planno', badge: 'Live', badgeLive: true, date: 'OCT 2024 — PRESENT', title: 'Planno',
-    desc: "A planner that does the executive function for you. Brain-dump your morning; Planno hands back a time-boxed day with the big goals broken into small, startable pieces. Deployed, and actually opened most mornings — which is the metric that matters.",
-    tags: ['React', 'FastAPI', 'SQLite', 'Claude', 'Ollama'],
-    links: [
-      { label: 'Live demo', href: 'https://planno-eta.vercel.app/', icon: 'ext' },
-      { label: 'Source', href: 'https://github.com/Chris-Buzz', icon: 'github', muted: true },
+    key: 'Governance',
+    h: 'Keep a person accountable for the result.',
+    why: 'The model drafts. A person frames the problem, checks the output and owns the decision.',
+    proof: [
+      { src: 'LearnAI', lead: 'Five stages per session,', text: 'from framing the problem to verification, ending in ethical reflection.', to: '/work/learnai' },
+      { src: 'Brain', lead: 'Dated, sourced notes.', text: 'A newer decision supersedes an older one instead of erasing it.', to: '/work/brain' },
     ],
-    shot: 'planno',
   },
   {
-    num: '04', slug: 'cybergame', badge: 'Complete', date: 'DEC 2025', title: 'CyberGame',
-    desc: 'A cybersecurity training sim: a fake phone screen feeds you texts, emails, and calls, and you decide what\'s phishing and what\'s real. 50+ scenarios, scoring, levels that get meaner as you improve. Built to make security training something people actually finish.',
-    tags: ['Flask', 'Python', 'SQLite', 'REST API'],
-    links: [
-      { label: 'Source', href: 'https://github.com/Chris-Buzz', icon: 'github' },
+    key: 'Privacy',
+    h: 'Keep data where it belongs.',
+    why: 'Run the smallest model that does the job, as close to the data as possible, and refuse to move what should stay put.',
+    proof: [
+      { src: 'Planno', lead: 'SQLite on the iPhone', text: 'holds everything a person writes. A cloud model is opt-in, with their own key.', to: '/work/planno' },
+      { src: 'Brain', lead: 'Local models', text: 'for embeddings and answers. A sync refuses anything that looks like a secret.', to: '/work/brain' },
     ],
-    shot: 'cyber',
-  },
-  {
-    num: '05', slug: 'claudebot', badge: 'Running', date: 'FEB 2026 — PRESENT', title: 'Claudebot',
-    desc: 'A personal Discord assistant on the Anthropic SDK — answers in my servers, remembers with SQLite, and can drive a browser through Playwright when a question needs the live web.',
-    tags: ['TypeScript', 'discord.js', 'Claude', 'SQLite', 'Playwright'],
-    links: [
-      { label: 'Source', href: 'https://github.com/Chris-Buzz', icon: 'github' },
-    ],
-    shot: 'claudebot',
-  },
-  {
-    num: '06', slug: 'buzzy-the-ai', badge: 'Origin story', date: 'JAN 2025', title: 'Buzzy the AI',
-    desc: 'Where Digby started: an offline desktop assistant on Ollama and Llama 3, with profiles and custom personalities. Everything I learned building Buzzy — local models, memory, personality — fed straight into Digby.',
-    tags: ['Python', 'Electron', 'Ollama', 'Llama 3'],
-    links: [
-      { label: 'Source', href: 'https://github.com/Chris-Buzz', icon: 'github' },
-    ],
-    shot: 'buzzy',
-  },
-  {
-    num: '07', slug: 'product-scraper', badge: 'Automation', date: 'APR 2025', title: 'Product Scraper',
-    desc: 'Selenium automation that runs product searches, ranks by rating and price, and hands back a shortlist. Browser automation that survives the real, messy web — retries, waits, and all.',
-    tags: ['Python', 'Selenium', 'Headless Chrome'],
-    links: [{ label: 'Source', href: 'https://github.com/Chris-Buzz', icon: 'github' }],
-    shot: 'scraper',
-  },
-  {
-    num: '08', slug: 'this-portfolio', badge: 'In progress', date: '2026 —', title: 'This Portfolio',
-    desc: 'The site you\'re on. A scroll-driven 3D dive, the full interactive Hive, and Digby answering questions with sources — all in a system I call Honey & Ink.',
-    tags: ['React', 'Three.js', 'Canvas', 'RAG', 'Gemini'],
-    links: [
-      { label: 'Enter the Hive', href: '#/hive', icon: 'arrow' },
-      { label: 'Read the build log', href: '#/thoughts', icon: 'doc', muted: true },
-    ],
-    shot: 'graph',
   },
 ];
 
-/* ── Case studies — one per project slug, drives /work/<slug> ─────────────
-   NOTE(intake): dates, live URLs, and per-repo GitHub links still need
-   confirming via PORTFOLIO-INTAKE.md. Copy below sticks to what the repos
-   themselves document — no invented metrics.                              */
+/* -- projects ----------------------------------------------------------- */
 
-export interface CaseStudy {
-  /** one-line hook under the title */
+export type Tone = 'live' | 'progress' | 'planned';
+
+export interface Stat {
+  value: string;
+  label: string;
+  /** a target or work in progress, shown apart from measured results */
+  plan?: string;
+}
+
+export type Evidence =
+  | { kind: 'recall' }
+  | { kind: 'stats'; source: { title: string; detail: string }; items: Stat[]; note: string }
+  | { kind: 'image'; src: string; alt: string; width: number; height: number; caption: string };
+
+export interface Project {
+  slug: string;
+  num: string;
+  title: string;
+  year: string;
+  status: { label: string; tone: Tone };
+  summary: string;
+  figure: Stat;
+  tags: string[];
   tagline: string;
-  /** overview paragraphs */
-  overview: string[];
-  /** feature cards */
-  highlights: { h: string; p: string }[];
-  /** narrative beats (kicker / heading / paragraph) */
-  story: { k: string; h: string; p: string }[];
-  /** stack rows for the side rail */
-  stack: { k: string; v: string }[];
-  /** at-a-glance rows for the side rail */
-  facts: { k: string; v: string }[];
-  /** prompt for the "Ask Digby" button */
+  meta: { k: string; v: string }[];
+  links: { label: string; href: string }[];
+  /** shown where a repo or live link would normally go */
+  note?: string;
+  problem: string[];
+  how: { h: string; p: string }[];
+  evidence?: Evidence;
+  decisions: { h: string; p: string }[];
+  standing: { item: string; state: string; tone: Tone }[];
+  /** prompt for the portfolio guide */
   ask: string;
 }
 
-export const CASE_STUDIES: Record<string, CaseStudy> = {
-  learnai: {
-    tagline: 'A full AI consulting platform — bookings, payments, a project showcase, and a prompt-upgrading Chrome extension, running on a real production stack.',
-    overview: [
-      'LearnAI is the biggest thing I\'ve shipped: a platform where people book 1-on-1 AI consulting sessions, browse a showcase of working AI projects, and pay — actually pay — through Stripe. Sign-in runs through Google or Microsoft OAuth, data lives in Supabase, and a FastAPI backend holds it together.',
-      'It also ships a Chrome extension that rewrites your prompts on any AI site before you hit enter, powered by Claude on AWS Bedrock. The platform and the extension share one account system, so the product works wherever you already are.',
+export const PROJECTS: Project[] = [
+  {
+    slug: 'brain',
+    num: '01',
+    title: 'Brain',
+    year: '2026',
+    status: { label: 'In daily use', tone: 'live' },
+    summary: 'One memory for every AI tool I use. Local retrieval, measured with a test set, with guardrails that keep secrets out.',
+    figure: { value: '81.3% → 100%', label: 'Recall, hit in the top 4, on a 36-case test' },
+    tags: ['Node.js', 'LanceDB', 'Ollama', 'Evaluation'],
+    tagline: 'One memory across every AI tool I use, kept on my own machine and measured before I trust it.',
+    meta: [
+      { k: 'Role', v: 'Designed and built it, solo' },
+      { k: 'Timeline', v: '2026, ongoing' },
+      { k: 'Status', v: 'In daily use, local only' },
+      { k: 'Built with', v: 'Node.js, LanceDB, Ollama, Markdown in Git' },
     ],
-    highlights: [
-      { h: 'Bookings and payments, end to end', p: 'Session scheduling with Stripe checkout all the way through — the unglamorous parts (auth, payments, state) are the parts that work.' },
-      { h: 'Chrome extension (MV3)', p: 'A prompt enhancer that runs on claude.ai, ChatGPT, and friends — one click and your prompt comes back sharper.' },
-      { h: 'Real OAuth sign-in', p: 'Google and Microsoft OAuth flows into Supabase — the kind of plumbing tutorials skip.' },
-      { h: 'Claude via AWS Bedrock', p: 'Model calls run server-side through Bedrock, keeping keys off the client and usage under control.' },
+    links: [],
+    note: 'The code is private by choice, so this page explains it with a diagram instead of a repo link. No vault contents appear here.',
+    problem: [
+      'I use five AI tools on my PC (Claude Code, Codex, Cursor, Antigravity and Gemini) plus ChatGPT and Claude.ai in the browser. Each keeps its own memory or none, so a decision made in one is invisible to the next, and I kept explaining the same project again.',
+      'The cloud assistants offer data exports but no way to read their memory. So the memory had to live somewhere I control, in plain files that any tool can be handed.',
     ],
-    story: [
-      { k: 'Why I built it', h: 'Everyone asked the same questions', p: 'People kept asking how to actually use AI — not the hype, the practice. A booking platform for 1-on-1 sessions turned those conversations into a product.' },
-      { k: 'How it went', h: 'The stack got serious', p: 'This is where the toy-project stack stopped being enough: OAuth instead of fake logins, Stripe instead of a "contact me" form, Supabase migrations instead of a JSON file. Every piece had to survive a stranger using it.' },
-      { k: 'What I learned', h: 'Auth and payments come first now', p: 'The lesson LearnAI beat into me: features demo well, but auth, payments, and error states are the product. I build those first now.' },
+    how: [
+      {
+        h: 'Collect',
+        p: 'A digest step reads each tool’s local history (Claude Code transcripts, Codex and Cursor databases, Antigravity summaries, Gemini CLI chats). An import step reads ChatGPT, Claude.ai and Gemini export files. Each chat becomes a dated session note that records which tool it came from.',
+      },
+      {
+        h: 'Guard',
+        p: 'Before anything is written, text that looks like an API key, token or password is replaced with [redacted], and lines that mention a blocked term are dropped. The blocked terms are a list I control.',
+      },
+      {
+        h: 'Store',
+        p: 'The memory is plain Markdown in a private Git repository, one fact per note, each with a date and a source. I read and edit it in Obsidian. A sync refuses to commit if the staged changes look like a secret or carry a controlled-information marking.',
+      },
+      {
+        h: 'Index',
+        p: 'Each note is split into chunks and embedded by nomic-embed-text, a small embedding model running in Ollama on my PC. LanceDB, an embedded vector database stored on disk, keeps the vectors and a full-text index of the same chunks.',
+      },
+      {
+        h: 'Recall',
+        p: 'A question is scored two ways, by meaning (how close its embedding is to each chunk) and by words (BM25, a classic keyword ranking), and the scores are blended. A question about a date or a tool is narrowed to notes from that date or tool first.',
+      },
+      {
+        h: 'Deliver',
+        p: 'A hook adds the best notes to each Claude Code prompt. A generated profile block keeps Codex and Gemini current, and a short version can be pasted into ChatGPT or Claude.ai. An ask command has a local model answer from the six best notes and cite them.',
+      },
     ],
-    stack: [
-      { k: 'Frontend', v: 'React · Vite · Tailwind · Framer Motion' },
-      { k: 'Backend', v: 'FastAPI · Supabase (Postgres)' },
-      { k: 'AI', v: 'Claude on AWS Bedrock' },
-      { k: 'Payments / Auth', v: 'Stripe · Google + Microsoft OAuth' },
-      { k: 'Extension', v: 'Chrome Manifest V3' },
+    evidence: { kind: 'recall' },
+    decisions: [
+      {
+        h: 'Left graph RAG out.',
+        p: 'One hop along note links scored below plain hybrid recall, 93.8% against 100%. At a few hundred notes, the links already sit inside the notes that rank. I will measure it again once the vault passes a few thousand.',
+      },
+      {
+        h: 'One retrieval, no agent loop.',
+        p: 'The first search already puts an expected note in the top 4 for every test question, so a multi-step loop would add waiting without adding answers.',
+      },
+      {
+        h: 'No app and no server.',
+        p: 'I built a desktop app and removed it the same day. Obsidian is the window and hooks do the work. Nothing is hosted, so there is no endpoint for anyone else to query.',
+      },
+      {
+        h: 'Dropped the persona.',
+        p: 'Brain is the useful part of Digby, a personal-assistant project I shelved on November 1, 2026. I kept the memory problem and dropped the character.',
+      },
     ],
-    facts: [
-      { k: 'Role', v: 'Solo — design to deploy' },
-      { k: 'Timeline', v: '2025 — present' },
-      { k: 'Status', v: 'Flagship, in development' },
-      { k: 'Type', v: 'Full-stack SaaS' },
+    standing: [
+      { item: 'Recall, the ask command and the auto-recall hook', state: 'In daily use', tone: 'live' },
+      { item: 'Chats from Claude Code, Codex, Cursor, Antigravity and Gemini CLI', state: 'Read at the start of each session', tone: 'live' },
+      { item: 'ChatGPT, Claude.ai and Gemini export imports', state: 'Built and tested on sample files', tone: 'progress' },
+      { item: 'Reranker and graph expansion', state: 'Measured, not needed at this size', tone: 'planned' },
+      { item: 'Public release', state: 'Not planned', tone: 'planned' },
     ],
-    ask: 'Walk me through how LearnAI works.',
+    ask: 'How does Brain work, and how was it measured?',
   },
+  {
+    slug: 'learnai',
+    num: '02',
+    title: 'LearnAI',
+    year: '2025 to 2026',
+    status: { label: 'Paper published', tone: 'live' },
+    summary: 'A Monmouth University program that teaches people to use AI on their own work, and the co-authored paper that documents it.',
+    figure: { value: '293', label: 'Students reached by class visits in 18 courses' },
+    tags: ['Human-led AI', 'Research', 'React', 'FastAPI'],
+    tagline: 'Teaching people to use AI on work they already care about, with a person in the loop.',
+    meta: [
+      { k: 'Role', v: 'Paper co-author, booking-site developer' },
+      { k: 'Timeline', v: 'October 2025 to now' },
+      { k: 'Status', v: 'Paper published, site live' },
+      { k: 'Built with', v: 'React, FastAPI, Supabase' },
+    ],
+    links: [{ label: 'Read the paper on arXiv', href: 'https://arxiv.org/abs/2608.19164' }],
+    problem: [
+      'Knowing AI exists is different from using it well on your own work. A general demo shows what a tool can do and then leaves people alone with a blank prompt.',
+      'LearnAI, a program at Monmouth University, pairs people with a tutor and a problem of their own, so the learning happens on real work.',
+    ],
+    how: [
+      { h: 'Class visits', p: '15-minute visits introduced the tools in 18 courses across five disciplines.' },
+      { h: 'One-on-one sessions', p: 'Hour-long sessions with an undergraduate tutor, built around something the person is already working on.' },
+      {
+        h: 'A five-stage script',
+        p: 'Each session moves through problem framing, matching the task to a tool, prompting together, deployment and verification, and ethical reflection.',
+      },
+      { h: 'The booking site', p: 'lainow.com is where people find the program and book a session. I wrote most of its code, with help from teammates.' },
+    ],
+    evidence: {
+      kind: 'stats',
+      source: {
+        title: 'LearnAI: Just-in-Time AI Co-Creation Across Disciplines at a University.',
+        detail: 'Weihao Qu, Ling Zheng, Chris Buzaid and Daniel Crawford. SIGCSE Virtual 2026.',
+      },
+      items: [
+        { value: '293', label: 'Students in class visits' },
+        { value: '15', label: 'Faculty in class visits' },
+        { value: '18', label: 'Courses across five disciplines' },
+        { value: '70+', label: 'One-on-one sessions' },
+        { value: '35', label: 'People served one on one' },
+        { value: '4', label: 'Undergraduate tutors' },
+      ],
+      note: 'Covers Fall 2025 and Spring 2026. The program and its results belong to the whole team.',
+    },
+    decisions: [
+      {
+        h: 'A person stays in the loop.',
+        p: 'Tutors frame the problem and check the result with the learner. The AI helps draft, and the person decides what is good enough.',
+      },
+      {
+        h: 'Teach it just in time.',
+        p: 'A tool is introduced at the moment someone needs it for their own work, not ahead of time in the abstract.',
+      },
+      {
+        h: 'Strip the site to booking.',
+        p: 'The first site advertised features that were never finished. The rebuild keeps only what the program uses, which is learning about it and booking a session.',
+      },
+    ],
+    standing: [
+      { item: 'Paper', state: 'Published at SIGCSE Virtual 2026. Live session November 12 to 15', tone: 'live' },
+      { item: 'Program', state: 'Documented through Spring 2026', tone: 'live' },
+      { item: 'Booking site', state: 'Live at lainow.com, with a smaller rebuild in progress', tone: 'live' },
+    ],
+    ask: 'What did Chris contribute to LearnAI?',
+  },
+  {
+    slug: 'buzzoff',
+    num: '03',
+    title: 'Buzz Off',
+    year: '2026',
+    status: { label: 'In development', tone: 'progress' },
+    summary: 'My senior project. A living-room party game where the TV is the show and each phone is a prop in your hand.',
+    figure: { value: '3 games', label: 'Bowling, golf and Hot Lap. The senior project is due December 2026', plan: 'In progress' },
+    tags: ['Expo', 'React Native', 'Three.js', 'Multiplayer'],
+    tagline: 'The TV is the show, and each phone is a prop in your hand.',
+    meta: [
+      { k: 'Role', v: 'Designer and developer' },
+      { k: 'Timeline', v: 'Fall 2026 senior project' },
+      { k: 'Status', v: 'In development' },
+      { k: 'Built with', v: 'Expo, React Native, Three.js, Rapier' },
+    ],
+    links: [],
+    problem: [
+      'Game nights tend to end with everyone on their own phone. I wanted a game for a group of friends in one room that gets people off their phones by making the phone part of the game.',
+      'It is my senior project for my computer science degree at Monmouth, and I want it to be a real product people use at parties, not a class demo.',
+    ],
+    how: [
+      { h: 'The TV is the show', p: 'The shared screen runs the scene everyone watches, like the bowling alley, the golf hole or the race track, so eyes stay up.' },
+      { h: 'The phone is a prop', p: 'Each phone becomes the thing in your hand, a bowling ball, a golf club or a steering wheel in Hot Lap. Its motion sensors read the swing or the tilt.' },
+      { h: 'Anyone can join', p: 'Guests join from a phone browser with no account. The iPhone app is the full version.' },
+      {
+        h: 'One server keeps score',
+        p: 'A small server keeps track of the game night (who joined, whose turn it is, the scores) and passes messages between the phones and the TV.',
+      },
+    ],
+    evidence: {
+      kind: 'image',
+      src: '/projects/buzzoff-bowling.jpg',
+      alt: 'A round cartoon bowler in a red, white and blue headband holding a blue bowling ball in a lit bowling alley.',
+      width: 536,
+      height: 724,
+      caption: 'Bowling artwork from the game',
+    },
+    decisions: [
+      { h: 'Three games done properly first.', p: 'Bowling, golf and Hot Lap each have to be great from start to finish before more games get added. A few easy party games come next.' },
+      { h: 'The TV is a web page.', p: 'Any screen with a browser can be the TV, so there is nothing to install on it.' },
+      { h: 'No accounts for now.', p: 'A guest should be able to join from the couch in a browser. Accounts can wait until something needs them.' },
+    ],
+    standing: [
+      { item: 'Bowling', state: 'TV scene and phone controller built', tone: 'progress' },
+      { item: 'Golf', state: 'TV scene and phone controller built. The swing still needs testing in real hands', tone: 'progress' },
+      { item: 'Hot Lap', state: 'One track playable end to end', tone: 'progress' },
+      { item: 'Party games', state: 'In progress', tone: 'progress' },
+      { item: 'App blocking through Screen Time', state: 'Planned', tone: 'planned' },
+      { item: 'TestFlight', state: 'First build uploaded October 23, 2026', tone: 'live' },
+    ],
+    ask: 'What is Buzz Off and where does it stand?',
+  },
+  {
+    slug: 'planno',
+    num: '04',
+    title: 'Planno',
+    year: '2026',
+    status: { label: 'In development', tone: 'progress' },
+    summary: 'An iPhone app for people who run many projects at once. Talk to capture a thought, then stay on one project until you choose to switch.',
+    figure: { value: '4 mornings', label: 'Of real use in one week, by December 14, 2026', plan: 'Target' },
+    tags: ['Expo', 'SQLite', 'On-device AI'],
+    tagline: 'Capture the thought. Stay on the next step.',
+    meta: [
+      { k: 'Role', v: 'Designer and developer' },
+      { k: 'Timeline', v: '2026' },
+      { k: 'Status', v: 'In development' },
+      { k: 'Built with', v: 'Expo, React Native, SQLite' },
+    ],
+    links: [],
+    problem: [
+      'Ideas arrive at the wrong time, and switching between projects costs more than it should. Planners usually ask you to sort everything first, which is the part that slips.',
+      'Planno is an iPhone app for people who run many projects at once, built first for people with ADHD. I am its first user.',
+    ],
+    how: [
+      { h: 'Talk to capture', p: 'Say the thought. Planno files it into the right project’s roadmap and shows a receipt you can undo.' },
+      { h: 'One project in focus', p: 'The app keeps one project and its next step in front of you until you choose to switch.' },
+      {
+        h: 'Everything on the phone',
+        p: 'Projects and captures live in SQLite on the iPhone, with no account and no sync. A model only judges small questions, like which project a thought belongs to.',
+      },
+      {
+        h: 'Three tiers of AI',
+        p: 'Apple’s on-device model where the phone supports it, Claude Haiku with your own API key if you opt in, or plain rules with no model at all.',
+      },
+    ],
+    decisions: [
+      { h: 'Smaller on purpose.', p: 'Earlier versions were a web planner with much more surface. This one does capture and focus, and nothing else until those hold up.' },
+      { h: 'Phone only.', p: 'With data on the phone, nothing a person writes has to leave it by default, and there is no server holding anyone’s notes.' },
+      { h: 'Your key, never one in the app.', p: 'A key bundled in an app can be pulled out of it, so the cloud tier uses the person’s own key, stored in the iPhone Keychain.' },
+    ],
+    standing: [
+      { item: 'Phone-only build', state: 'Built October 25, 2026', tone: 'live' },
+      { item: 'Development build on an iPhone 13', state: 'Next', tone: 'planned' },
+      { item: 'Four real mornings in one week', state: 'The finish line, by December 14, 2026', tone: 'planned' },
+    ],
+    ask: 'What is the current scope of Planno?',
+  },
+];
 
-  digby: {
-    tagline: 'A local-first AI second brain: your notes become a knowledge graph that builds itself, answers with citations, and serves any AI tool over MCP.',
-    overview: [
-      'Digby is my answer to a simple discomfort: I don\'t want my second brain living on someone else\'s server. Your notes stay as markdown on your own disk; Digby indexes them into a knowledge graph that builds itself, runs retrieval over it, and answers questions with citations back to the exact files.',
-      'The part I\'m proudest of is the MCP layer — Digby exposes your vault as a Model Context Protocol server, so Claude Desktop, Cursor, or any MCP client can read your knowledge base too. One Tauri desktop app, embeddings through Ollama, everything on-device. He\'s also the assistant on this site — the chat in the corner is Digby\'s cloud twin.',
-    ],
-    highlights: [
-      { h: 'Fully on-device', p: 'Markdown vault, SQLite + sqlite-vec index, Ollama embeddings — nothing leaves your machine.' },
-      { h: 'Self-building graph', p: 'Notes get parsed, linked, and embedded automatically; the graph grows as you write.' },
-      { h: 'Answers with receipts', p: 'RAG over your own vault, with citations to the exact notes — no confident guessing.' },
-      { h: 'MCP server built in', p: 'Claude Desktop or Cursor can query your vault directly. Your notes become infrastructure.' },
-    ],
-    story: [
-      { k: 'Why I built it', h: 'Buzzy deserved a bigger brain', p: 'Buzzy — my first offline assistant — could talk, but he couldn\'t really know things. The fix wasn\'t a bigger model; it was giving a small model a real memory: my own notes, indexed properly.' },
-      { k: 'How it went', h: 'Three runtimes, one app', p: 'Tauri wraps a React front end and a Python FastAPI sidecar into one desktop app. Getting Rust, Node, and Python to behave as a single install was its own education.' },
-      { k: 'What I learned', h: 'Keeping it local made everything simpler', p: 'Privacy isn\'t a checkbox — it\'s an architecture. Deciding "nothing leaves the machine" up front made every later decision simpler and the product more honest.' },
-    ],
-    stack: [
-      { k: 'Desktop', v: 'Tauri 2 · React 19 · TypeScript' },
-      { k: 'Engine', v: 'Python 3.11 · FastAPI sidecar' },
-      { k: 'Index', v: 'SQLite · sqlite-vec' },
-      { k: 'AI', v: 'Ollama (nomic-embed-text) · RAG' },
-      { k: 'Interop', v: 'MCP (Model Context Protocol)' },
-    ],
-    facts: [
-      { k: 'Role', v: 'Solo — architecture to UI' },
-      { k: 'Timeline', v: '2026 — present' },
-      { k: 'Status', v: 'Flagship, in development' },
-      { k: 'Type', v: 'Desktop app · AI infra' },
-    ],
-    ask: 'Tell me about Digby — the desktop app, not just you.',
-  },
+export const projectBySlug = (slug: string) => PROJECTS.find((p) => p.slug === slug);
 
-  planno: {
-    tagline: 'A planner that does the executive function for you: brain-dump your morning, get back a time-boxed day you can actually start.',
-    overview: [
-      'Planno exists because the hardest part of a productive day is the first ten minutes of deciding. You dump everything on your mind into one box; Planno hands back a time-boxed day with the big goals broken into small, startable pieces — and recharge time protected instead of treated as leftover.',
-      'It\'s deployed and it\'s the project I actually live in: opened most mornings, which is the only planner metric that matters. The AI runs through Claude on the server, or Ollama when I want it fully local.',
-    ],
-    highlights: [
-      { h: 'Starts with a brain-dump', p: 'Free-text morning dump becomes a structured, time-boxed day — no forms, no dragging blocks around.' },
-      { h: 'Startable pieces', p: 'Big goals get broken into chapters small enough that starting stops being the hard part.' },
-      { h: 'Recharge is protected', p: 'Rest gets scheduled like work, because a plan that burns you out by Wednesday isn\'t a plan.' },
-      { h: 'Hand-rolled auth', p: 'scrypt hashing and HMAC-signed sessions, written from scratch — built to understand it, not just install it.' },
-    ],
-    story: [
-      { k: 'Why I built it', h: 'Planners assume you\'ve already decided', p: 'Every planner app wants you to arrive with tasks pre-sorted. The actual problem is upstream: turning a foggy morning into a first step. That\'s a language problem, which makes it an LLM problem.' },
-      { k: 'How it went', h: 'Ten months of dogfooding', p: 'Using it every morning meant every rough edge got felt personally. Features that sounded clever but didn\'t survive a real Tuesday got cut.' },
-      { k: 'What I learned', h: 'It has to be worth opening tomorrow', p: 'Planno taught me to optimize for "opened again tomorrow" over "impressive in a demo." Retention is the honest benchmark, even with one user.' },
-    ],
-    stack: [
-      { k: 'Frontend', v: 'React · Vite' },
-      { k: 'Backend', v: 'FastAPI · Uvicorn · SQLite' },
-      { k: 'AI', v: 'Claude (server) · Ollama (local)' },
-      { k: 'Auth', v: 'scrypt + HMAC sessions' },
-      { k: 'Deploy', v: 'Vercel' },
-    ],
-    facts: [
-      { k: 'Role', v: 'Solo — daily user included' },
-      { k: 'Timeline', v: 'Oct 2024 — present' },
-      { k: 'Status', v: 'Live · deployed' },
-      { k: 'Type', v: 'Web app · AI planning' },
-    ],
-    ask: 'How does Planno turn a brain-dump into a day plan?',
-  },
+/* -- Brain recall results (node scripts/brain.mjs eval --mode all) ------ */
 
-  cybergame: {
-    tagline: 'Security training people actually finish: a simulated phone feeds you texts, emails, and calls — you decide what\'s phishing.',
-    overview: [
-      'CyberGame makes security training feel like a game instead of a compliance chore. A fake phone screen feeds you messages — texts, emails, calls — and you call out what\'s phishing and what\'s legitimate. Fifty-plus scenarios, scoring, and levels that get meaner as you improve.',
-      'The difficulty curve is the product: early rounds teach the obvious tells (urgency, weird domains, too-good offers), later rounds mimic the subtle social-engineering patterns that catch real people.',
-    ],
-    highlights: [
-      { h: '50+ scenarios', p: 'Texts, emails, and calls drawn from real phishing patterns — not strawman examples.' },
-      { h: 'Escalating difficulty', p: 'Levels progress from "obvious scam" to genuinely uncomfortable judgment calls.' },
-      { h: 'Instant feedback', p: 'Every answer explains the tell you caught or missed — the explanation is the training.' },
-      { h: 'Score & progression', p: 'Points and levels keep you playing long enough for the instincts to stick.' },
-    ],
-    story: [
-      { k: 'Why I built it', h: "The slideshow version doesn't work", p: 'Corporate phishing training is a slideshow people click through. The knowledge only sticks if the reps feel real — so I made it a game with stakes and a score.' },
-      { k: 'How it went', h: 'Flask, SQLite, and a fake phone', p: 'A REST API serves scenarios into a simulated phone UI. Keeping the interface believable — real-feeling messages, plausible senders — mattered more than any framework choice.' },
-      { k: 'What I learned', h: 'The hard part was the difficulty curve', p: 'The interesting engineering wasn\'t the endpoints — it was tuning when the game gets harder so players stay in the zone between bored and defeated.' },
-    ],
-    stack: [
-      { k: 'Backend', v: 'Python · Flask · REST API' },
-      { k: 'Data', v: 'SQLite' },
-      { k: 'Frontend', v: 'HTML · CSS · JavaScript' },
-    ],
-    facts: [
-      { k: 'Role', v: 'Solo' },
-      { k: 'Timeline', v: 'Dec 2025' },
-      { k: 'Status', v: 'Complete' },
-      { k: 'Type', v: 'Web game · Security education' },
-    ],
-    ask: 'What makes CyberGame different from normal security training?',
-  },
-
-  claudebot: {
-    tagline: 'A personal Discord assistant on the Anthropic SDK — persistent memory in SQLite, and a real browser when a question needs the live web.',
-    overview: [
-      'Claudebot lives in my Discord servers and answers like an assistant that actually remembers. It\'s TypeScript on the official Anthropic SDK, with better-sqlite3 for persistent memory — so context survives restarts — and Playwright wired in so it can drive a real browser when a question needs the live web instead of training data.',
-      'It\'s the project where I learned to think in tools: deciding what the model should answer directly versus when it should reach for the browser or the database.',
-    ],
-    highlights: [
-      { h: 'Built on the Anthropic SDK', p: 'Streaming replies and structured tool use straight from the official SDK — no wrapper glue.' },
-      { h: 'Memory that survives', p: 'better-sqlite3 keeps conversation memory on disk; the bot remembers your server across restarts.' },
-      { h: 'A real browser on call', p: 'Playwright lets it fetch and read live pages when the answer isn\'t in the model.' },
-      { h: 'Lives where we talk', p: 'No app to open — it answers in the channels my friends and clubs already use.' },
-    ],
-    story: [
-      { k: 'Why I built it', h: 'The assistant should come to the chat', p: 'My groups organize life in Discord. Instead of everyone tabbing out to a chatbot, the chatbot should sit in the channel.' },
-      { k: 'How it went', h: 'Giving it tools changed the design', p: 'Once the bot could browse and remember, the hard problem became orchestration — when to use which tool, and how to keep responses fast while a browser spins up behind the scenes.' },
-      { k: 'What I learned', h: 'Deciding what it should not do', p: 'Claudebot was my first real agentic build: capability is easy, judgment is hard. Deciding what the bot won\'t do mattered as much as what it can.' },
-    ],
-    stack: [
-      { k: 'Runtime', v: 'TypeScript · Node · discord.js' },
-      { k: 'AI', v: 'Anthropic SDK (Claude)' },
-      { k: 'Memory', v: 'better-sqlite3' },
-      { k: 'Web access', v: 'Playwright' },
-    ],
-    facts: [
-      { k: 'Role', v: 'Solo' },
-      { k: 'Timeline', v: 'Feb 2026 — present' },
-      { k: 'Status', v: 'Running daily' },
-      { k: 'Type', v: 'Discord bot · Agent' },
-    ],
-    ask: 'What can Claudebot do in a Discord server?',
-  },
-
-  'buzzy-the-ai': {
-    tagline: 'Where Digby started: a fully offline desktop assistant on Ollama and Llama 3, with profiles and personalities.',
-    overview: [
-      'Buzzy was my first swing at a personal AI: an Electron desktop assistant running Llama 3 through Ollama, completely offline. It had user profiles and customizable personalities — you could shape who Buzzy was, and everything stayed on your machine.',
-      'It\'s on this page as an origin story, because every idea in Digby traces back here: local models, personality design, memory, and the conviction that a personal AI should be personal — yours, on your hardware.',
-    ],
-    highlights: [
-      { h: '100% offline', p: 'Llama 3 through Ollama — no API keys, no cloud, no telemetry. The whole point.' },
-      { h: 'Personalities', p: 'Configurable personas and profiles — an early lesson in how much voice shapes perceived intelligence.' },
-      { h: 'The proving ground', p: 'Local inference, prompt design, memory experiments — the skills Digby is built on were learned here.' },
-    ],
-    story: [
-      { k: 'Why I built it', h: 'Could a real assistant run on my laptop?', p: 'When small open models got good, I wanted to know how far one could go with zero cloud. Buzzy was the experiment.' },
-      { k: 'How it went', h: 'Electron + Ollama, no safety net', p: 'Local inference means you own the whole failure surface — model management, context limits, cold starts. Debugging that taught me more than any API ever did.' },
-      { k: 'What I learned', h: 'The rough draft did its job', p: 'Buzzy was rough, and that was fine — he became the requirements document for Digby. Shipping the rough version is how the good version gets designed.' },
-    ],
-    stack: [
-      { k: 'Desktop', v: 'Electron · Python' },
-      { k: 'AI', v: 'Ollama · Llama 3' },
-    ],
-    facts: [
-      { k: 'Role', v: 'Solo' },
-      { k: 'Timeline', v: 'Jan 2025' },
-      { k: 'Status', v: 'Retired — evolved into Digby' },
-      { k: 'Type', v: 'Desktop app · Origin story' },
-    ],
-    ask: 'How did Buzzy turn into Digby?',
-  },
-
-  'product-scraper': {
-    tagline: 'Selenium automation that survives the real, messy web — search products, rank by rating and price, hand back a shortlist.',
-    overview: [
-      'The Product Scraper runs product searches through a headless Chrome, parses the results, ranks them by rating and price, and returns a clean shortlist. Simple idea; the education was in making it survive the actual web — layouts that shift, elements that load late, pages that lie.',
-    ],
-    highlights: [
-      { h: 'Headless automation', p: 'Selenium driving Chrome through real search flows, not a brittle one-page script.' },
-      { h: 'Ranked, usable results', p: 'Results come back scored by rating and price — a shortlist, not a data pile.' },
-      { h: 'Built for the messy web', p: 'Waits, retries, and fallback selectors — the difference between a demo and a tool.' },
-    ],
-    story: [
-      { k: 'Why I built it', h: 'Comparison shopping is robot work', p: 'Opening twelve tabs to compare the same product is exactly the kind of tedium automation exists for.' },
-      { k: 'What I learned', h: 'The web fights back', p: 'Scraping taught me that error handling is the program. Everything since — including Claudebot\'s Playwright browsing — leans on lessons from here.' },
-    ],
-    stack: [
-      { k: 'Runtime', v: 'Python' },
-      { k: 'Automation', v: 'Selenium · headless Chrome' },
-    ],
-    facts: [
-      { k: 'Role', v: 'Solo' },
-      { k: 'Timeline', v: 'Apr 2025' },
-      { k: 'Status', v: 'Complete' },
-      { k: 'Type', v: 'Automation · Tooling' },
-    ],
-    ask: 'What did the Product Scraper teach Chris about automation?',
-  },
-
-  'this-portfolio': {
-    tagline: 'The site you\'re on: a scroll-driven 3D dive, a living knowledge graph, and an AI that answers questions about me with citations.',
-    overview: [
-      'This portfolio is built to be explored, not scrolled. The home page opens with a Three.js dive; the Hive page lets you wander my actual knowledge graph by hand; and Digby — the mole in the corner — answers questions over it with real retrieval and citations, streaming from Gemini through a serverless function.',
-      'Everything is one system: projects, posts, and skills live as nodes in one dataset, and the Hive page and Digby\'s brain both read from it. Add a project, and both learn it. The visual language — muted cream, professional orange, one serif with opinions — is a system I call Honey & Ink.',
-    ],
-    highlights: [
-      { h: 'The dive', p: 'A scroll-driven Three.js tunnel that blooms into light as you land — frame-rate-independent easing, theme-aware rendering, reduced-motion safe.' },
-      { h: 'The Hive', p: 'A force-directed graph of everything I\'ve built and learned — pannable, searchable, filterable.' },
-      { h: 'Digby, live', p: 'Client-side retrieval over the graph, Gemini generation server-side, GenUI cards and safe navigation actions in the replies.' },
-      { h: 'Honey & Ink', p: 'A token-driven design system with light and dark themes — soon to be extracted into its own open-source library.' },
-    ],
-    story: [
-      { k: 'Why I built it', h: 'I wanted proof, not claims', p: 'Anyone can write "I know RAG." This site answers questions about my work with citations — the claim and the demo are the same artifact.' },
-      { k: 'How it went', h: 'One dataset runs the whole site', p: 'The discipline was keeping content as data: hive.ts feeds the graph page and Digby\'s retrieval. No copy lives in components.' },
-      { k: 'What I learned', h: 'The performance budget did me a favor', p: 'A strict performance budget — no shadows, capped pixel ratio, physics that sleep — forced the kind of engineering that reads as polish.' },
-    ],
-    stack: [
-      { k: 'Frontend', v: 'React · TypeScript · Vite' },
-      { k: '3D / Canvas', v: 'Three.js · Canvas 2D' },
-      { k: 'AI', v: 'Gemini · RAG · GenUI protocol' },
-      { k: 'Backend', v: 'Vercel serverless (SSE streaming)' },
-    ],
-    facts: [
-      { k: 'Role', v: 'Solo — design system included' },
-      { k: 'Timeline', v: '2026 — present' },
-      { k: 'Status', v: 'In progress, always' },
-      { k: 'Type', v: 'Portfolio · Playground' },
-    ],
-    ask: 'How does this site work under the hood?',
-  },
+export const RECALL = {
+  questions: 32,
+  unrelated: 4,
+  before: '81.3%',
+  after: '100%',
+  measured: 'November 1, 2026',
+  rerun: 'November 2, 2026',
+  rows: [
+    { name: 'Words only', detail: 'BM25 keyword ranking', hit: 87.5, mrr: 0.764 },
+    { name: 'Meaning only', detail: 'nomic-embed-text vectors', hit: 87.5, mrr: 0.76 },
+    { name: 'Hybrid', detail: 'Meaning first, words break ties', hit: 100, mrr: 0.872, chosen: true },
+    { name: 'Hybrid plus graph', detail: 'Adds one hop along note links', hit: 93.8, mrr: 0.858 },
+  ],
+  hookFound: '93.8%',
+  hookFalseAlarms: '0',
 };
 
-export interface Post {
-  num: string;
-  title: string;
-  sub: string;
-  nodes: number;
-  meta: string;
-  featured?: boolean;
+/* -- about -------------------------------------------------------------- */
+
+export const ABOUT = {
+  lede: 'I study computer science at Monmouth University and graduate in December 2026. I build my own AI products, plus websites and tools for small businesses and family who don’t have them, and I like learning each thing properly.',
+  facts: [
+    { k: 'School', v: 'Monmouth University, B.S. Computer Science' },
+    { k: 'Graduating', v: 'December 2026' },
+    { k: 'GPA', v: '3.9 / 4.0' },
+    { k: 'Dean’s List', v: 'Every semester, Fall 2023 to Spring 2026' },
+    { k: 'Based in', v: 'Monmouth County, NJ' },
+  ],
+};
+
+export interface Role {
+  org: string;
+  role: string;
+  place: string;
+  date: string;
+  points: string[];
 }
 
-export const FEATURED_POST: Post = {
-  num: '01', featured: true,
-  title: 'Building Buzzy: an AI that only knows me',
-  sub: 'Why a small, personal RAG system beats a general chatbot for a portfolio — the architecture, the embeddings, the memory design, and the honest limitations of an AI with one subject.',
-  nodes: 6, meta: 'RAG · LLMS · MEMORY',
+export const EXPERIENCE: Role[] = [
+  {
+    org: 'IBM',
+    role: 'Backend Developer Intern, z/OSMF',
+    place: 'Poughkeepsie, NY',
+    date: 'May to August 2026',
+    points: [
+      'Wrote functional verification tests for the z/OSMF REST APIs.',
+      'Prototyped generative UI features with the Vercel AI SDK on local models.',
+      'Helped build a custom mode for Bob, IBM’s AI coding agent, that walks developers through the full test-generation process.',
+      'Led a team workshop on getting more out of Bob.',
+    ],
+  },
+  {
+    org: 'General Technical Services (GTS)',
+    role: 'AI Research Intern',
+    place: 'Wall Township, NJ',
+    date: 'January to May 2026',
+    points: [],
+  },
+  {
+    org: 'Monmouth University',
+    role: 'AI Research Assistant, LearnAI',
+    place: 'West Long Branch, NJ',
+    date: 'October 2025 to now',
+    points: [
+      'Co-authored the LearnAI paper for SIGCSE Virtual 2026.',
+      'Wrote most of the code for lainow.com, the program’s booking site, with help from teammates.',
+    ],
+  },
+];
+
+export const PAPER = {
+  title: 'LearnAI: Just-in-Time AI Co-Creation Across Disciplines at a University',
+  authors: 'Weihao Qu, Ling Zheng, Chris Buzaid, Daniel Crawford',
+  venue: 'SIGCSE Virtual 2026',
+  id: 'arXiv:2608.19164',
+  href: 'https://arxiv.org/abs/2608.19164',
 };
 
-export const POSTS: Post[] = [
-  { num: '02', title: 'What basketball taught me about shipping code', sub: "Practice players don't get the spotlight — they make the team better. On code review, pairing, and leading a club of fifty.", nodes: 4, meta: '8 MIN' },
-  { num: '03', title: 'From portfolio to living knowledge base', sub: 'The build log for this site — the cinematic hero, the Hive, and why work should be explorable instead of scrollable.', nodes: 8, meta: '10 MIN' },
-  { num: '04', title: 'Honey & Ink: designing my own identity system', sub: 'Muted creams, professional orange, one serif with opinions — how a favorite color became a full design language.', nodes: 3, meta: '6 MIN' },
-  { num: '05', title: 'The Planno build log: an AI planner people actually open', sub: 'Decisions and dead-ends from ten months of building — and what weather data taught me about useful AI.', nodes: 5, meta: '9 MIN' },
-];
-
-export const ABOUT_FACTS = [
-  { k: 'Based', v: 'Lake Grove, NY' },
-  { k: 'School', v: 'Monmouth University' },
-  { k: 'Degree', v: "B.S. Computer Science, '27" },
-  { k: 'GPA', v: '3.9 / 4.0' },
-  { k: 'Focus', v: 'AI · LLMs · Full-stack' },
-  { k: 'Status', v: PROFILE.status, accent: true },
-];
-
-export const CHAPTERS = [
-  { n: '01', k: 'The Spark', h: 'Where it started', p: "The first program that ran changed what I thought a computer was for. I stopped consuming software and started making it — and chose Monmouth's CS program to get serious about the craft.", tags: ['Class of 2027', '3.9 GPA'] },
-  { n: '02', k: 'The Court', h: 'Learning to lead a locker room', p: "As Club Basketball president I run logistics, culture, and engagement for fifty-plus students. As a practice player for the Women's team, my whole job is making someone else better — the most transferable skill I own.", tags: ['Club President', 'Practice Player'] },
-  { n: '03', k: 'The Build', h: 'Building outside the classroom', p: 'Planno, Buzzy, the scraper, and a long tail of experiments — ten-plus projects that turned coursework into instinct. The ones that failed taught the most; the ones that shipped are on the Work page.', tags: ['Python', 'React', 'Flask', 'LLMs'] },
-  { n: '04', k: 'The Hive', h: 'Putting everything in one place', p: 'This site is the current project: every artifact I make becomes a node in one graph, and my own AI answers questions from it. The goal is a body of work you can interrogate, not just admire.', tags: ['Knowledge graph', 'RAG', 'Digby'] },
-];
-
-export const EDUCATION = {
-  title: 'B.S. Computer Science — Monmouth University',
-  date: 'EXPECTED MAY 2027',
-  sub: "West Long Branch, NJ · GPA 3.9/4.0 · Dean's List, every semester to date",
-  courses: ['Data Structures & Algorithms', 'Advanced OOP', 'Full-Stack Engineering', 'Discrete Math', 'Cybersecurity', 'Scripting Languages'],
-};
-
-export const EXPERIENCE = [
-  { role: 'Busser — Danfords Hotel, Marina & Spa', org: 'Port Jefferson, NY', date: 'MAY 2024 — AUG 2025', note: 'High-volume hospitality at 500+ guests a day. Where I learned that systems under pressure — human or software — fail at their least-designed point.' },
-  { role: 'Basketball Camp Counselor — Centereach HS', org: 'Centereach, NY', date: 'JUN 2023 — AUG 2023', note: 'Coached fundamentals to 50+ kids ages 5–13. Explaining a pick-and-roll to a seven-year-old is the best technical-communication training available.' },
-];
-
-export const AWARDS = ["Dean's List — Fall 2023", "Dean's List — Spring 2024", "Dean's List — Fall 2024", "Dean's List — Spring 2025"];
+export const BEYOND =
+  'Former president of Monmouth Club Basketball. I have also been a practice player for the women’s team, where the whole job is making someone else better.';

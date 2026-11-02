@@ -1,88 +1,49 @@
-# Christopher Buzaid — Portfolio
+# Christopher Buzaid, portfolio
 
-A personal portfolio built around one idea: **everything I make connects into a single knowledge graph you can talk to.**
+My personal site. It shows how I make AI dependable inside a team (integration, evaluation, governance,
+privacy) and backs each claim with a project page: what it is for, how it works, what I decided and why, and
+what is still unfinished.
 
-Design system is **"Honey & Ink"** — muted cream, professional orange, one opinionated serif (Fraunces), a clean sans (Inter), and a mono (JetBrains Mono).
+Stack: Vite, React 18, TypeScript (strict), react-router (HashRouter), Vitest. Design: Buzz & Ink v2, which is
+white, true black, neutral greys, one orange and Geist.
 
-Stack: **Vite + React 18 + TypeScript + react-router-dom + Three.js**.
-
----
-
-## Quick start
+## Run it
 
 ```bash
 npm install
 npm run dev      # http://localhost:5173
+npm test
+npm run build    # type check, then the production bundle in dist/
+npm run preview  # serve dist/
 ```
 
-Build / preview:
+## Pages
 
-```bash
-npm run build
-npm run preview
-```
-
-> Requires Node 18+.
-
----
-
-## What's here
-
-| Page | Route | Highlight |
+| Page | Route | What it holds |
 | --- | --- | --- |
-| Home | `#/` | A scroll-driven **Three.js tunnel** cinematic that opens on bare text, dives through a hexagon/particle tunnel, lands in light, then a story band on a living honeycomb background. |
-| Work | `#/work` | Editorial case-study rows with CSS-built product mockups. |
-| The Hive | `#/hive` | A full-screen **interactive force-directed knowledge graph** (2D canvas): pan, zoom, search, filter, click a node for details. |
-| Thoughts | `#/thoughts` | Writing index — featured post + list, all auto-"indexed" into the Hive. |
-| About | `#/about` | Story chapters, education, experience, recognition. |
-| Buzzy | global | A scripted concept chat assistant ("reads the Hive") openable from anywhere. |
+| Home | `#/` | Positioning, a Now panel, the How I work ledger (four habits, each linked to proof), the work rows |
+| Work | `#/work` | Every project with its status and one key figure |
+| Case study | `#/work/:slug` | Brain, LearnAI, Buzz Off, Planno. Problem, how it works, evidence, decisions, where it stands |
+| About | `#/about` | Experience, research, beyond the code |
+| Not found | anything else | Links back to the work |
 
-Routing uses **HashRouter** (`#/work`, etc.) so it deploys to any static host with zero config.
+The portfolio guide (the Ask button in the header) answers questions from the site's public notes. It calls
+`/api/digby` when `GEMINI_API_KEY` is set and falls back to saved replies when it is not.
 
----
-
-## Architecture
+## Layout
 
 ```
 src/
-  main.tsx              # entry — mounts <App/> inside providers
-  App.tsx               # router, route veil, body[data-route], global chrome
-  styles/
-    global.css          # the entire Honey & Ink design system (ported 1:1 from the prototype)
-  data/                 # all content lives here — pages are data-driven
-    content.ts          # projects, posts, about chapters, education, experience
-    hive.ts             # knowledge-graph nodes + edges (single source of truth)
-    buzzy.ts            # Buzzy's scripted reply rules
-  context/
-    ThemeContext.tsx    # light/dark, persisted, drives data-theme on <html>
-    BuzzyContext.tsx    # open/close + ask(query) from anywhere
-  hooks/
-    useReveal.ts        # IntersectionObserver scroll-reveal (ref-based)
-    useScrollProgress.ts# 0..1 progress of an element through the viewport
-  components/
-    IconSprite.tsx      # inline SVG <symbol> defs (logo mark + icon set)
-    Header.tsx  Footer.tsx  RouteVeil.tsx  Reveal.tsx  Photo.tsx
-    Buzzy.tsx           # FAB + chat panel (consumes BuzzyContext)
-  three/
-    HeroCinematic.tsx   # the WebGL tunnel (Three.js in a single effect)
-  graph/
-    HiveCanvas.tsx      # the 2D force-directed graph (Canvas 2D)
-  pages/
-    Home.tsx  Work.tsx  Hive.tsx  Thoughts.tsx  About.tsx
+  data/content.ts       all copy and project data
+  data/hive.ts          public notes the guide retrieves from
+  data/guide.ts         saved replies for the guide
+  styles/site.css       tokens and every component style
+  pages/                Home, Work, ProjectDetail, About, NotFound
+  components/           Header, Ticker, Footer, WorkRows, Peek, Scramble, Guide, BrainDiagram, RecallResults, IconSprite
+  context/              ThemeContext, GuideContext
+  lib/digby.ts          retrieval, streaming client, card and action parser
+api/                    the guide's serverless function (Vercel)
+design/                 brief, page inventory and review notes for the 2026-11-02 rebuild
 ```
 
-**Principle:** content is data, not markup. To add a project, post, or graph node, edit the relevant file in `src/data/` — the pages map over it.
-
----
-
-## Design tokens
-
-All colors / type / spacing are CSS custom properties in `:root` (and `[data-theme="dark"]`) at the top of `src/styles/global.css`. Use the variables, never hard-coded hexes.
-
-Key ones: `--bg --surface --ink --ink-2 --orange --orange-bright --honey --taupe --sage --line --font-d --font-b --font-m`.
-
----
-
-## Known follow-ups (see CLAUDE.md)
-
-This was ported from a single-file prototype, so a few things are intentionally left for polish: splitting `global.css` into CSS Modules, tightening TypeScript `strict`, real routing-level code-splitting, swapping the hotlinked portrait for local assets, and wiring Buzzy to a real RAG backend. Details and rationale live in **CLAUDE.md**.
+Working notes for agents are in `CLAUDE.md`.

@@ -1,171 +1,177 @@
+import { useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
-import Reveal from '../components/Reveal';
-import ProjectShot from '../components/ProjectShot';
-import HexField from '../three/HexField';
 import { Icon } from '../components/IconSprite';
-import { useBuzzy } from '../context/BuzzyContext';
-import { CASE_STUDIES, PROJECTS } from '../data/content';
-import { PROJECT_SHOTS } from '../lib/shots';
+import BrainDiagram from '../components/BrainDiagram';
+import RecallResults from '../components/RecallResults';
+import { useGuide } from '../context/GuideContext';
+import { PROJECTS, type Evidence, type Project } from '../data/content';
 
-/** /work/:slug — one case study per project, driven by CASE_STUDIES data. */
+function Section({ n, label, children }: { n: number; label: string; children: React.ReactNode }) {
+  const id = label.toLowerCase().replace(/[^a-z]+/g, '-');
+  return (
+    <section className="cs-section" aria-labelledby={id}>
+      <div className="cs-label">
+        <h2 className="label" id={id}>
+          <span className="num">0{n}</span>
+          <span>{label}</span>
+        </h2>
+      </div>
+      <div className="cs-body">{children}</div>
+    </section>
+  );
+}
+
+function EvidenceBlock({ evidence }: { evidence: Evidence }) {
+  if (evidence.kind === 'recall') return <RecallResults />;
+  if (evidence.kind === 'stats') {
+    return (
+      <>
+        <p className="cite">
+          <em>{evidence.source.title}</em> {evidence.source.detail}
+        </p>
+        <div className="stats">
+          {evidence.items.map((s) => (
+            <div key={s.label}>
+              <strong>{s.value}</strong>
+              <span>{s.label}</span>
+            </div>
+          ))}
+        </div>
+        <p className="fine">{evidence.note}</p>
+      </>
+    );
+  }
+  return (
+    <figure className="shot">
+      <img src={evidence.src} alt={evidence.alt} width={evidence.width} height={evidence.height} loading="lazy" />
+      <figcaption>
+        <span className="fine">{evidence.caption}</span>
+        <span className="label">In development</span>
+      </figcaption>
+    </figure>
+  );
+}
+
+const evidenceLabel = (p: Project) =>
+  p.evidence?.kind === 'recall' ? 'Measured' : p.evidence?.kind === 'stats' ? 'Results' : 'From the game';
+
+/** /work/:slug, one case study per project, driven by PROJECTS data. */
 export default function ProjectDetail() {
   const { slug = '' } = useParams();
-  const { ask } = useBuzzy();
+  const { ask } = useGuide();
+  const [active, setActive] = useState<number | null>(null);
 
   const idx = PROJECTS.findIndex((p) => p.slug === slug);
-  const project = PROJECTS[idx];
-  const cs = CASE_STUDIES[slug];
-  if (!project || !cs) return <Navigate to="/work" replace />;
-
-  const shots = PROJECT_SHOTS[slug] ?? [];
-  const prev = PROJECTS[(idx + PROJECTS.length - 1) % PROJECTS.length];
+  if (idx < 0) return <Navigate to="/work" replace />;
+  const p = PROJECTS[idx];
   const next = PROJECTS[(idx + 1) % PROJECTS.length];
-  const hrefLinks = project.links.filter((l) => l.href);
+  const isBrain = p.slug === 'brain';
 
+  let n = 0;
   return (
-    <div className="page" id="page-project">
-      {/* ── cinematic header with ambient 3D field ─────────────────────── */}
-      <header className="pd-hero">
-        <HexField seed={slug} className="pd-scene" />
-        <div className="pd-hero-veil" />
-        <div className="wrap pd-hero-inner">
-          <Link to="/work" className="text-link muted pd-back">
-            <Icon name="arrow" style={{ transform: 'rotate(180deg)' }} /> All work
-          </Link>
-          <div className="w-top pd-top">
-            <span className="w-num">{project.num}</span>
-            <span className={`badge${project.badgeLive ? ' live' : ''}`}>{project.badge}</span>
-            <span className="w-date">{project.date}</span>
-          </div>
-          <h1 className="display">{project.title}</h1>
-          <p className="lede">{cs.tagline}</p>
-          <div className="w-tags">
-            {project.tags.map((t) => (
-              <span className="tag" key={t}>{t}</span>
-            ))}
-          </div>
-          <div className="pd-ctas">
-            {hrefLinks.map((l) => {
-              const external = l.href!.startsWith('http');
-              const primary = /live|demo/i.test(l.label);
-              return (
-                <a
-                  key={l.label}
-                  className={`btn ${primary ? 'btn-primary' : 'btn-ghost'}`}
-                  href={l.href}
-                  target={external ? '_blank' : undefined}
-                  rel={external ? 'noopener noreferrer' : undefined}
-                >
-                  {l.label} <Icon name={l.icon} className="ic" />
-                </a>
-              );
-            })}
-            <button className="btn btn-ghost" onClick={() => ask(cs.ask)}>
-              Ask Digby about it <Icon name="spark" className="ic" />
-            </button>
-          </div>
+    <article>
+      <header className="wrap cs-head">
+        <Link to="/work" className="back label">
+          <Icon name="arrow" /> All work
+        </Link>
+        <p className="cs-top">
+          <span>{p.num}</span>
+          <span className="status" data-tone={p.status.tone}>{p.status.label}</span>
+          <span>{p.year}</span>
+        </p>
+        <h1>{p.title}</h1>
+        <p className="cs-tagline">{p.tagline}</p>
+        <dl className="cs-meta">
+          {p.meta.map((m) => (
+            <div key={m.k}>
+              <dt className="label">{m.k}</dt>
+              <dd>{m.v}</dd>
+            </div>
+          ))}
+        </dl>
+        <div className="cs-actions">
+          {p.links.map((l) => (
+            <a key={l.href} className="btn btn-solid" href={l.href} target="_blank" rel="noopener noreferrer">
+              {l.label} <Icon name="ext" />
+            </a>
+          ))}
+          <button className="btn btn-line" onClick={() => ask(p.ask)}>
+            Ask the guide about {p.title}
+          </button>
+          {p.note && <p className="cs-note">{p.note}</p>}
         </div>
       </header>
 
-      {/* ── overview + rail ────────────────────────────────────────────── */}
-      <div className="wrap pd-grid">
-        <div className="pd-main">
-          <Reveal as="section" className="pd-sec">
-            <div className="kicker">Overview</div>
-            {cs.overview.map((para, i) => (
-              <p className="pd-para" key={i}>{para}</p>
-            ))}
-          </Reveal>
-
-          <Reveal as="section" className="pd-sec">
-            <div className="kicker">What it does</div>
-            <div className="pd-highlights">
-              {cs.highlights.map((h) => (
-                <div className="pd-hl" key={h.h}>
-                  <h3>{h.h}</h3>
-                  <p>{h.p}</p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-
-          <Reveal as="section" className="pd-sec">
-            <div className="kicker">The story</div>
-            <div className="story-list pd-story">
-              {cs.story.map((b, i) => (
-                <article className="story-item" key={b.k}>
-                  <span className="si-num">{String(i + 1).padStart(2, '0')}</span>
-                  <div className="si-body">
-                    <div className="si-k">{b.k}</div>
-                    <h3>{b.h}</h3>
-                    <p>{b.p}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-
-        <aside className="pd-rail">
-          <div className="rail-card">
-            <div className="rail-title">At a glance</div>
-            {cs.facts.map((f) => (
-              <div className="fact" key={f.k}>
-                <span className="f-k">{f.k}</span>
-                <span className="f-v">{f.v}</span>
-              </div>
+      <div className="wrap">
+        <Section n={++n} label="The problem">
+          <div className="prose">
+            {p.problem.map((para) => (
+              <p key={para.slice(0, 24)}>{para}</p>
             ))}
           </div>
-          <div className="rail-card">
-            <div className="rail-title">Stack</div>
-            {cs.stack.map((s) => (
-              <div className="fact" key={s.k}>
-                <span className="f-k">{s.k}</span>
-                <span className="f-v">{s.v}</span>
-              </div>
-            ))}
-          </div>
-          <button className="np-ask" onClick={() => ask(cs.ask)}>
-            <Icon name="spark" /> Ask Digby about {project.title}
-          </button>
-        </aside>
-      </div>
+        </Section>
 
-      {/* ── gallery: real screenshots when present, concept mock until ── */}
-      <section className="wrap pd-gallery">
-        <Reveal className="next-head">
-          <h2>Screenshots</h2>
-          <p>{shots.length ? 'FROM THE APP' : 'CONCEPT PREVIEW — REAL ONES COMING'}</p>
-        </Reveal>
-        {shots.length ? (
-          <div className="pd-shots">
-            {shots.map((s) => (
-              <Reveal as="figure" className="pd-shot" key={s.url}>
-                <img src={s.url} alt={`${project.title} — ${s.caption || 'screenshot'}`} loading="lazy" />
-                {s.caption && <figcaption>{s.caption}</figcaption>}
-              </Reveal>
+        <Section n={++n} label="How it works">
+          {isBrain && <BrainDiagram active={active} onActive={setActive} />}
+          <ol className="steps">
+            {p.how.map((s, i) => (
+              <li
+                key={s.h}
+                data-active={isBrain && active === i}
+                onMouseEnter={isBrain ? () => setActive(i) : undefined}
+                onMouseLeave={isBrain ? () => setActive(null) : undefined}
+                onClick={isBrain ? () => setActive(active === i ? null : i) : undefined}
+              >
+                <span className="label num">0{i + 1}</span>
+                <h3>{s.h}</h3>
+                <p>{s.p}</p>
+              </li>
             ))}
-          </div>
-        ) : (
-          <Reveal className="pd-mockwrap">
-            <ProjectShot kind={project.shot} />
-          </Reveal>
+          </ol>
+        </Section>
+
+        {p.evidence && (
+          <Section n={++n} label={evidenceLabel(p)}>
+            <EvidenceBlock evidence={p.evidence} />
+          </Section>
         )}
-      </section>
 
-      {/* ── prev / next ────────────────────────────────────────────────── */}
-      <nav className="wrap pd-nav" aria-label="More projects">
-        <Link to={`/work/${prev.slug}`} className="pd-nav-card">
-          <span className="pdn-k"><Icon name="arrow" style={{ transform: 'rotate(180deg)' }} /> Previous</span>
-          <h3>{prev.title}</h3>
-          <p>{CASE_STUDIES[prev.slug]?.tagline}</p>
+        <Section n={++n} label="Decisions">
+          <ul className="decisions">
+            {p.decisions.map((d) => (
+              <li key={d.h}>
+                <h3>{d.h}</h3>
+                <p>{d.p}</p>
+              </li>
+            ))}
+          </ul>
+        </Section>
+
+        <Section n={++n} label="Where it stands">
+          <ul className="standing">
+            {p.standing.map((s) => (
+              <li key={s.item}>
+                <span className="item">{s.item}</span>
+                <span className="status" data-tone={s.tone}>{s.state}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="legend" aria-hidden="true">
+            <span className="status" data-tone="live">Done or live</span>
+            <span className="status" data-tone="progress">In progress</span>
+            <span className="status" data-tone="planned">Planned</span>
+          </p>
+        </Section>
+
+        <Link className="cs-next" to={`/work/${next.slug}`}>
+          <span className="label">Next project</span>
+          <strong>
+            {next.title}
+            <Icon name="arrow" />
+          </strong>
+          <p>{next.tagline}</p>
         </Link>
-        <Link to={`/work/${next.slug}`} className="pd-nav-card pdn-next">
-          <span className="pdn-k">Next <Icon name="arrow" /></span>
-          <h3>{next.title}</h3>
-          <p>{CASE_STUDIES[next.slug]?.tagline}</p>
-        </Link>
-      </nav>
-    </div>
+      </div>
+    </article>
   );
 }

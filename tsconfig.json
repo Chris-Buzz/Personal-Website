@@ -13,11 +13,9 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Lenient on purpose — this was ported from a prototype. Tighten these
-       (strict, noUnusedLocals, noUnusedParameters) as Claude Code polishes. */
-    "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"]

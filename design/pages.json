@@ -1,0 +1,36 @@
+{
+  "project": "portfolio",
+  "updated": "2026-11-02",
+  "flows": [
+    {
+      "name": "Browse",
+      "pages": [
+        { "id": "home", "route": "/", "purpose": "Positioning, How I work ledger, selected work rows, contact" },
+        { "id": "work", "route": "/work", "purpose": "Every project as a row with status and one key figure" },
+        { "id": "about", "route": "/about", "purpose": "Photo, facts, experience, research, beyond the code" },
+        { "id": "not-found", "route": "*", "purpose": "Unknown route, links back to the work" }
+      ]
+    },
+    {
+      "name": "Case studies",
+      "pages": [
+        { "id": "brain", "route": "/work/brain", "purpose": "Diagram, walkthrough, recall results, decisions, status" },
+        { "id": "learnai", "route": "/work/learnai", "purpose": "Program, paper numbers, booking site, status" },
+        { "id": "buzzoff", "route": "/work/buzzoff", "purpose": "Senior project, artwork, game status" },
+        { "id": "planno", "route": "/work/planno", "purpose": "Scope, AI tiers, finish line" }
+      ]
+    },
+    {
+      "name": "Overlays",
+      "pages": [
+        { "id": "guide", "route": "(panel)", "purpose": "Portfolio guide chat, grounded in public notes, with sources" }
+      ]
+    }
+  ],
+  "checklist": {
+    "phone": "Every page checked at 375px",
+    "dark": "Theme toggle on every page",
+    "empty_or_error": "Guide falls back to saved notes when the API is unavailable",
+    "reduced_motion": "Name reveal and route fade switch off"
+  }
+}

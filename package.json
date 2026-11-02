@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Christopher Buzaid — personal portfolio. Honey & Ink design system: muted cream, professional orange, one knowledge graph.",
+  "description": "Christopher Buzaid, personal portfolio. Buzz & Ink v2: white, true black, one orange, Geist.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

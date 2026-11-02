@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
-import { replyTo } from '../data/buzzy';
+import { replyTo } from '../data/guide';
 import { retrieve, streamDigby } from '../lib/digby';
 
 export interface ChatMessage {
@@ -9,22 +9,25 @@ export interface ChatMessage {
   src?: string | null;
 }
 
-interface BuzzyApi {
+interface GuideApi {
   open: boolean;
   setOpen: (v: boolean) => void;
   messages: ChatMessage[];
   typing: boolean;
-  /** true = Gemini live, false = scripted fallback, null = not asked yet */
+  /** true from a question until its answer is complete, so screen readers announce the finished reply once */
+  busy: boolean;
+  /** true = live model, false = saved replies, null = not asked yet */
   live: boolean | null;
   /** Open the panel and answer a question (used by buttons across the site). */
   ask: (query: string) => void;
 }
 
-const BuzzyContext = createContext<BuzzyApi>({
+const GuideContext = createContext<GuideApi>({
   open: false,
   setOpen: () => {},
   messages: [],
   typing: false,
+  busy: false,
   live: null,
   ask: () => {},
 });
@@ -32,13 +35,14 @@ const BuzzyContext = createContext<BuzzyApi>({
 const GREETING: ChatMessage = {
   id: 0,
   who: 'bot',
-  text: "Hey — I'm Digby, Chris's knowledge engine and one of his projects. I read the Hive — every project, post, and skill on this site — and answer with sources. Ask me anything about his work.",
+  text: 'Ask about Chris’s projects or experience. I answer from this site’s public notes only, not from his private Brain vault.',
 };
 
-export function BuzzyProvider({ children }: { children: React.ReactNode }) {
+export function GuideProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([GREETING]);
   const [typing, setTyping] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [live, setLive] = useState<boolean | null>(null);
   const idRef = useRef(1);
   const msgsRef = useRef<ChatMessage[]>(messages);
@@ -52,6 +56,7 @@ export function BuzzyProvider({ children }: { children: React.ReactNode }) {
     const history = msgsRef.current.slice(-8).map(({ who, text }) => ({ who, text }));
     setMessages((m) => [...m, { id: idRef.current++, who: 'user', text: q }]);
     setTyping(true);
+    setBusy(true);
     const botId = idRef.current++;
 
     void (async () => {
@@ -67,24 +72,29 @@ export function BuzzyProvider({ children }: { children: React.ReactNode }) {
           }
         });
         setLive(true);
+        setBusy(false);
       } catch {
-        // API unreachable (vite dev / missing key) or died mid-stream → scripted concept mode
+        // API unreachable (no key, static hosting) or it died mid-stream: answer from saved replies.
         setLive(false);
         const r = replyTo(q);
-        window.setTimeout(() => {
-          setTyping(false);
-          setMessages((m) =>
-            started
-              ? m.map((msg) => (msg.id === botId ? { ...msg, text: r.t, src: r.src } : msg))
-              : [...m, { id: botId, who: 'bot', text: r.t, src: r.src }]
-          );
-        }, started ? 0 : 500 + Math.random() * 400);
+        window.setTimeout(
+          () => {
+            setTyping(false);
+            setMessages((m) =>
+              started
+                ? m.map((msg) => (msg.id === botId ? { ...msg, text: r.t, src: r.src } : msg))
+                : [...m, { id: botId, who: 'bot', text: r.t, src: r.src }]
+            );
+            setBusy(false);
+          },
+          started ? 0 : 350
+        );
       }
     })();
   }, []);
 
-  const value = useMemo(() => ({ open, setOpen, messages, typing, live, ask }), [open, messages, typing, live, ask]);
-  return <BuzzyContext.Provider value={value}>{children}</BuzzyContext.Provider>;
+  const value = useMemo(() => ({ open, setOpen, messages, typing, busy, live, ask }), [open, messages, typing, busy, live, ask]);
+  return <GuideContext.Provider value={value}>{children}</GuideContext.Provider>;
 }
 
-export const useBuzzy = () => useContext(BuzzyContext);
+export const useGuide = () => useContext(GuideContext);

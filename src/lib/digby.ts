@@ -1,6 +1,6 @@
-// Digby's client-side brain-half: retrieval over the Hive graph, the streaming
-// client for /api/digby, and the GenUI protocol parser. Generation happens
-// server-side (api/digby.ts); everything here is free and instant.
+// The portfolio guide's client half: retrieval over the public notes in data/hive.ts,
+// the streaming client for /api/digby, and the parser for cards and actions in a reply.
+// Generation happens server-side (api/digby.ts); everything here is free and instant.
 
 import { nodes, edges } from '../data/hive';
 
@@ -47,19 +47,19 @@ export function retrieve(query: string): Retrieved {
       if (nb >= 0 && picked.size < 8) picked.add(nb);
     }
   }
-  // nothing matched → ground on the flagship projects so Digby still knows who Chris is
+  // nothing matched: ground on the projects so the guide still knows who Chris is
   if (!picked.size) nodes.forEach((n, i) => { if (n.type === 'project' && picked.size < 5) picked.add(i); });
 
   return {
     context: [...picked].map((i) => `- ${nodes[i].label} [${nodes[i].type}]: ${nodes[i].desc}`).join('\n'),
-    sources: scored.length ? scored.map((x) => nodes[x.i].label).join(' · ') : 'the Hive',
+    sources: scored.length ? scored.map((x) => nodes[x.i].label).join(' · ') : 'project notes',
   };
 }
 
 /* ── GenUI protocol ────────────────────────────────────────────────────── */
 
-export const DIGBY_ROUTES = new Set(['/', '/work', '/hive', '/thoughts', '/about']);
-/** Routes Digby may link to: the five pages, /work/<slug> case studies, and
+export const DIGBY_ROUTES = new Set(['/', '/work', '/about']);
+/** Routes a reply may link to: the three pages, /work/<slug> case studies, and
  *  legacy /work?p=<slug> deep links. Anything else gets dropped. */
 export const isDigbyRoute = (to: string) =>
   DIGBY_ROUTES.has(to) || /^\/work\/[a-z0-9-]+$/.test(to) || /^\/work\?p=[a-z0-9-]+$/.test(to);
@@ -117,7 +117,7 @@ export function parseSegments(raw: string): Segment[] {
 /**
  * Stream a reply from the serverless function. Calls onDelta with the full
  * text so far on every token. Throws if the API is unreachable (vite dev
- * without `vercel dev`, missing key) — caller falls back to scripted mode.
+ * without `vercel dev`, missing key). The caller then falls back to saved replies.
  */
 export async function streamDigby(
   query: string,

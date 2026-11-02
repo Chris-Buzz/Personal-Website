@@ -8,21 +8,21 @@ describe('retrieve', () => {
     expect(r.context).toContain('Planno');
   });
 
-  it('expands one hop along edges (asking about Digby pulls in related tech)', () => {
-    const r = retrieve('Tell me about Digby');
+  it('expands one hop along edges (asking about Brain pulls in related tech)', () => {
+    const r = retrieve('Tell me about Brain');
     expect(r.context.split('\n').length).toBeGreaterThan(2);
   });
 
   it('falls back to project grounding for unmatched queries', () => {
     const r = retrieve('zzz qqq xyzzy');
-    expect(r.sources).toBe('the Hive');
+    expect(r.sources).toBe('project notes');
     expect(r.context.length).toBeGreaterThan(0);
   });
 });
 
 describe('parseSegments (GenUI protocol)', () => {
   it('splits prose + card + action', () => {
-    const raw = 'Here you go.\n```card\n{"type":"project","title":"Planno","to":"/work?p=planno"}\n```\n```action\n{"type":"navigate","to":"/hive","label":"Go"}\n```';
+    const raw = 'Here you go.\n```card\n{"type":"project","title":"Planno","to":"/work?p=planno"}\n```\n```action\n{"type":"navigate","to":"/about","label":"Go"}\n```';
     const segs = parseSegments(raw);
     expect(segs.map((s) => s.kind)).toEqual(['text', 'card', 'action']);
   });
@@ -50,5 +50,6 @@ describe('isDigbyRoute', () => {
     expect(isDigbyRoute('/work?p=Bad Slug')).toBe(false);
     expect(isDigbyRoute('https://evil.example')).toBe(false);
     expect(isDigbyRoute('/admin')).toBe(false);
+    expect(isDigbyRoute('/hive')).toBe(false);
   });
 });

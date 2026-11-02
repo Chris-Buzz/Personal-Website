@@ -1,0 +1,20 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "createdAt": "2026-11-02T19:07:45.735Z",
+        "reason": "Owner's documented type choice: Buzz & Ink v2 uses Geist (~/Brain/PROFILE.md, ~/Brain/playbooks/design.md ds-001, my-design reference/taste.md)"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "createdAt": "2026-11-02T19:07:45.973Z",
+        "reason": "Owner's documented type choice: Buzz & Ink v2 pairs Geist with Geist Mono (~/Brain/PROFILE.md, ~/Brain/playbooks/design.md ds-001, my-design reference/taste.md)"
+      }
+    ]
+  }
+}
