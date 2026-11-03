@@ -12,7 +12,7 @@ describe('saved replies', () => {
     GUIDE_SUGGESTIONS.forEach((q) => expect(replyTo(q), q).not.toBe(FALLBACK));
   });
 
-  it('explains Digby as the project Brain came from', () => {
+  it('explains Digby as the project Common Memory came from', () => {
     expect(replyTo('tell me about digby').src).toContain('Digby');
   });
 

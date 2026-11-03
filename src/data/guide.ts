@@ -1,5 +1,5 @@
 // Saved replies for the portfolio guide, used when the live model is unavailable.
-import { PROJECTS, PROFILE } from './content';
+import { MORE, PROJECTS, PROFILE } from './content';
 
 export interface GuideReply {
   k?: string[];
@@ -12,14 +12,19 @@ const action = (o: object) => '\n```action\n' + JSON.stringify(o) + '\n```';
 
 export const REPLIES: GuideReply[] = [
   ...PROJECTS.map((p) => ({
-    k: [p.slug, p.title.toLowerCase()],
+    k: [p.slug, p.title.toLowerCase(), ...(p.aliases ?? [])],
     src: p.title,
     t: p.problem.join('\n\n') + card({ type: 'project', title: p.title, body: p.summary, to: `/work/${p.slug}` }),
   })),
+  ...MORE.map((m) => ({
+    k: [m.id, m.title.toLowerCase()],
+    src: m.title,
+    t: m.line + action({ type: 'navigate', to: m.kind === 'At IBM' ? '/about' : '/work', label: m.kind === 'At IBM' ? 'Open About' : 'See the work' }),
+  })),
   {
     k: ['digby'],
-    src: 'Digby history · Brain',
-    t: 'Digby was a broader personal-assistant project that Chris shelved on November 1, 2026. Its memory work became Brain, which he uses every day. This guide reads only public project notes and cannot reach his private vault.',
+    src: 'Digby history · Common Memory',
+    t: 'Digby was a broader personal-assistant project that Chris shelved on November 1, 2026. Its memory work became Common Memory, which he uses every day. This guide reads only public project notes and cannot reach his private vault.',
   },
   {
     k: ['contact', 'email', 'hire', 'reach', 'touch'],
@@ -45,7 +50,7 @@ export const REPLIES: GuideReply[] = [
   {
     k: ['work', 'projects', 'built', 'portfolio', 'look at first', 'start'],
     src: 'Selected work',
-    t: 'Start with Brain for evaluation and privacy, LearnAI for the published research, Buzz Off for the senior project, or Planno for on-device AI on an iPhone.' +
+    t: 'Start with Common Memory for evaluation and privacy, LearnAI for the published research, Buzz Off for the senior project, or Planno for on-device AI on an iPhone.' +
       action({ type: 'navigate', to: '/work', label: 'See the work' }),
   },
 ];
@@ -62,4 +67,4 @@ export function replyTo(query: string): GuideReply {
   return REPLIES.find((r) => r.k?.some((k) => s.includes(k))) ?? FALLBACK;
 }
 
-export const GUIDE_SUGGESTIONS = ['How was Brain measured?', 'What did Chris do at IBM?', 'How do I reach Chris?'];
+export const GUIDE_SUGGESTIONS = ['How was Common Memory measured?', 'What did Chris do at IBM?', 'How do I reach Chris?'];

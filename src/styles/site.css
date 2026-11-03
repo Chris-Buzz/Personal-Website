@@ -461,6 +461,7 @@ h2.title {
 /* -- home: hero --------------------------------------------------------- */
 
 .hero {
+  position: relative;
   padding-top: clamp(48px, 8vw, 104px);
   padding-bottom: clamp(48px, 6vw, 72px);
   display: grid;
@@ -571,19 +572,29 @@ h2.title {
     transform: translateY(105%);
   }
 }
-.hero-lead {
-  margin-top: 36px;
-  font-size: clamp(30px, 3.3vw, 46px);
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  line-height: 1.08;
-  max-width: 18ch;
-  text-wrap: balance;
+/* the bee that visits hero buttons and Now links; BeeVisit.tsx moves it with the Web Animations API */
+.visit-bee {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 26px;
+  height: 26px;
+  color: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+.visit-bee[data-ink] {
+  color: var(--on-accent);
 }
 .hero-detail {
-  margin-top: 16px;
-  max-width: 56ch;
+  margin-top: 32px;
+  max-width: 46ch;
+  font-size: clamp(19px, 1.7vw, 23px);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
   color: var(--ink-2);
+  text-wrap: pretty;
 }
 .hero-actions {
   margin-top: 32px;
@@ -2178,7 +2189,676 @@ h2.title {
   html {
     scroll-behavior: auto;
   }
-  .land-bee {
+  .land-bee,
+  .visit-bee {
     display: none;
+  }
+}
+
+/* -- map (/map) ---------------------------------------------------------- */
+
+/* The stage is deep space in both themes. It sets its own colours instead of the theme tokens so the light theme
+   cannot put dark text on it. The backdrop is all CSS, so the canvas only draws the graph: a near-black sky, a
+   faint glow of the site's orange and a cooler grey haze, and two layers of stars, the brighter one twinkling
+   slowly. */
+.map-stage {
+  --m-ink: #f2f2f2;
+  --m-ink-2: #c4c4c4;
+  --m-ink-3: #929292;
+  --m-line: rgba(255, 255, 255, 0.1);
+  --m-panel: rgba(14, 14, 16, 0.84);
+  position: relative;
+  /* The whole viewport below the news bar and the header: the page is just the map. */
+  height: max(520px, calc(100svh - 120px));
+  background:
+    radial-gradient(40% 44% at 38% 46%, rgba(255, 106, 0, 0.12), transparent 70%),
+    radial-gradient(34% 40% at 74% 28%, rgba(200, 210, 230, 0.06), transparent 70%),
+    radial-gradient(140% 110% at 50% 40%, #121214 0%, #08080a 50%, #020203 100%);
+  color: var(--m-ink);
+  overflow: hidden;
+  isolation: isolate;
+}
+.map-stage::before,
+.map-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+/* Faint, dense stars: a handful of 1px dots repeated on tiles of different sizes, so the repeat never lines up. */
+.map-stage::before {
+  background-image:
+    radial-gradient(1px 1px at 23px 41px, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 97px 13px, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 151px 88px, rgba(255, 255, 255, 0.55), transparent),
+    radial-gradient(1px 1px at 61px 132px, rgba(255, 226, 204, 0.6), transparent),
+    radial-gradient(1px 1px at 183px 161px, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 11px 177px, rgba(255, 255, 255, 0.55), transparent);
+  background-size: 199px 197px, 223px 211px, 241px 233px, 257px 263px, 283px 271px, 311px 293px;
+}
+/* Brighter, sparse stars that twinkle. */
+.map-stage::after {
+  background-image:
+    radial-gradient(1.5px 1.5px at 41px 63px, #ffffff, transparent),
+    radial-gradient(2px 2px at 211px 141px, rgba(255, 255, 255, 0.95), transparent),
+    radial-gradient(1.5px 1.5px at 317px 29px, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2px 2px at 127px 271px, rgba(255, 226, 204, 0.9), transparent);
+  background-size: 367px 331px, 419px 389px, 457px 401px, 503px 467px;
+  animation: map-twinkle 6s ease-in-out infinite alternate;
+}
+@keyframes map-twinkle {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.map-stage :focus-visible {
+  outline-color: var(--m-ink);
+}
+.map-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+/* Vertical swipes keep scrolling the page on a phone; sideways drags turn the map and pinches zoom it. */
+.orbit-canvas {
+  display: block;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.map-side {
+  position: absolute;
+  z-index: 2;
+  top: clamp(24px, 3vw, 40px);
+  left: var(--gutter);
+  width: min(340px, 34vw);
+  max-height: calc(100% - 120px);
+  display: flex;
+  flex-direction: column;
+}
+.map-card,
+.map-list-panel {
+  padding: 18px;
+  border: 1px solid var(--m-line);
+  border-radius: 12px;
+  background: var(--m-panel);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  animation: map-card-in 0.2s var(--ease);
+}
+.map-list-panel {
+  overflow: auto;
+}
+.map-list-panel .map-list + .map-list {
+  margin-top: 18px;
+}
+.map-list-panel .label {
+  color: var(--m-ink-3);
+}
+@keyframes map-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.map-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.map-card .label {
+  color: var(--m-ink-3);
+}
+.map-card-close {
+  width: 44px;
+  height: 44px;
+  margin: -12px -12px -12px 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--m-ink-3);
+  transition: color 0.16s ease, background 0.16s ease;
+}
+.map-card-close:hover {
+  color: var(--m-ink);
+  background: rgba(255, 255, 255, 0.08);
+}
+.map-card h2 {
+  margin-top: 6px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.map-card p {
+  margin-top: 10px;
+  color: var(--m-ink-2);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.map-card .btn {
+  margin-top: 16px;
+}
+.map-stage .btn-line {
+  color: var(--m-ink);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+.map-stage .btn-line:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--m-ink);
+}
+
+.map-legend {
+  position: absolute;
+  z-index: 2;
+  top: clamp(24px, 3vw, 40px);
+  right: var(--gutter);
+  width: 248px;
+  max-height: calc(100% - 48px);
+  overflow: auto;
+  border: 1px solid var(--m-line);
+  border-radius: 12px;
+  background: var(--m-panel);
+  font: 500 12px/1.4 var(--mono);
+  color: var(--m-ink-2);
+}
+.map-legend-head {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font: 500 13px/1 var(--mono);
+  color: var(--m-ink);
+}
+.map-legend-head .ic {
+  transition: transform 0.2s var(--ease);
+}
+.map-legend-head[aria-expanded='false'] .ic {
+  transform: rotate(-90deg);
+}
+.map-legend-body {
+  padding: 2px 14px 14px;
+  border-top: 1px solid var(--m-line);
+}
+.map-legend-body .label {
+  margin: 14px 0 8px;
+  font-size: 10.5px;
+  color: var(--m-ink-3);
+}
+.map-stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.map-stats b {
+  margin-right: 4px;
+  font-weight: 600;
+  color: var(--m-ink);
+}
+.map-groups {
+  display: grid;
+  gap: 2px;
+}
+.map-groups button {
+  min-height: 40px;
+  margin: 0 -8px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 6px;
+  font: inherit;
+  color: var(--m-ink-2);
+  text-align: left;
+  transition: color 0.16s ease, background 0.16s ease;
+}
+.map-groups button:hover {
+  color: var(--m-ink);
+  background: rgba(255, 255, 255, 0.06);
+}
+.map-groups button[aria-pressed='true'] {
+  color: var(--m-ink);
+  background: rgba(255, 255, 255, 0.12);
+}
+.map-swatch {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--dot);
+}
+.map-swatch[data-shape='square'] {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+.map-swatch[data-shape='diamond'] {
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+.map-swatch[data-shape='triangle'] {
+  width: 10px;
+  height: 9px;
+  border-radius: 0;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+.map-swatch[data-shape='ring'] {
+  background: transparent;
+  border: 1.5px solid var(--dot);
+}
+.map-fire-key {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.map-asks {
+  display: grid;
+  gap: 6px;
+}
+/* Asking makes notes light up, and that is the one place the map uses orange. */
+.map-asks button {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 122, 26, 0.45);
+  border-radius: 8px;
+  font: 400 13px/1.3 var(--font);
+  color: var(--m-ink);
+  text-align: left;
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+.map-asks button:hover {
+  border-color: #ff7a1a;
+  background: rgba(255, 122, 26, 0.12);
+}
+
+.map-controls {
+  position: absolute;
+  z-index: 2;
+  left: var(--gutter);
+  bottom: clamp(20px, 3vw, 32px);
+  display: flex;
+  gap: 6px;
+}
+.map-controls button {
+  min-width: 44px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--m-line);
+  border-radius: 8px;
+  background: var(--m-panel);
+  font: 500 12px/1 var(--mono);
+  color: var(--m-ink-2);
+  transition: color 0.16s ease, border-color 0.16s ease;
+}
+.map-controls button:hover {
+  color: var(--m-ink);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.map-search {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: clamp(20px, 3vw, 32px);
+  width: min(380px, calc(100% - 2 * var(--gutter)));
+  height: 44px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--m-line);
+  border-radius: 999px;
+  background: var(--m-panel);
+  color: var(--m-ink-3);
+  transform: translateX(-50%);
+  transition: border-color 0.16s ease;
+}
+.map-search:focus-within {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.map-search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: 400 14px/1 var(--font);
+  color: var(--m-ink);
+}
+.map-search input::placeholder {
+  color: var(--m-ink-3);
+}
+.map-found {
+  font: 500 11px/1 var(--mono);
+  color: var(--m-ink-3);
+  white-space: nowrap;
+}
+.map-loading {
+  padding-top: 120px;
+  font: 500 13px/1.5 var(--mono);
+  color: var(--ink-3);
+}
+
+.map-list h2 {
+  margin: 0 0 6px;
+}
+.map-list-of {
+  margin: 8px 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--m-ink);
+}
+.map-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.map-list a {
+  display: inline-block;
+  padding: 4px 0;
+  font-size: 14px;
+  color: var(--m-ink-2);
+  transition: color 0.16s ease;
+}
+.map-list a:hover {
+  color: var(--m-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 4px;
+}
+.map-credit {
+  margin-top: 20px;
+  font: 500 11px/1.5 var(--mono);
+  color: var(--m-ink-3);
+}
+.map-credit a {
+  color: var(--m-ink-2);
+  text-decoration: underline;
+}
+.map-controls button[aria-pressed='true'] {
+  color: #0a0a0a;
+  background: var(--m-ink);
+  border-color: var(--m-ink);
+}
+.pill-item:hover .ic-map {
+  transform: rotate(-20deg) scale(1.06);
+}
+
+/* Between phone and desktop, the search moves to the right so it never meets the zoom buttons. */
+@media (min-width: 761px) and (max-width: 1040px) {
+  .map-search {
+    left: auto;
+    right: var(--gutter);
+    width: min(300px, 42%);
+    transform: none;
+  }
+}
+
+/* Phones stack the stage: the map in its own band, then search, the view buttons and the legend, so nothing
+   covers the graph. A selected note's card, or the list, rises from the bottom of the screen. */
+@media (max-width: 760px) {
+  .map-stage {
+    height: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 62svh auto auto auto;
+  }
+  .map-canvas {
+    position: relative;
+    inset: auto;
+    grid-row: 1;
+    min-height: 360px;
+  }
+  .map-side {
+    position: fixed;
+    top: auto;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 60;
+    width: auto;
+    max-height: 70svh;
+  }
+  .map-search {
+    position: static;
+    grid-row: 2;
+    width: auto;
+    margin: 12px var(--gutter) 0;
+    transform: none;
+  }
+  .map-controls {
+    position: static;
+    grid-row: 3;
+    flex-wrap: wrap;
+    padding: 10px var(--gutter) 0;
+  }
+  .map-legend {
+    position: static;
+    grid-row: 4;
+    width: auto;
+    max-height: none;
+    margin: 16px var(--gutter) 32px;
+  }
+}
+
+/* Four nav items and the Ask button do not fit a phone's width with labels, so on a narrow screen only the
+   current page keeps its word; the others show their icon, and screen readers still hear the full name. */
+@media (max-width: 480px) {
+  .pill-item:not(.active) {
+    padding: 0 14px;
+    gap: 0;
+  }
+  .pill-item:not(.active) .scramble > [aria-hidden='true'] {
+    display: none;
+  }
+}
+
+/* -- more work (Work page) and project pictures ------------------------ */
+
+.more {
+  margin-top: clamp(80px, 10vw, 128px);
+}
+.more-group {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 24px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.more-group + .more-group {
+  margin-top: 56px;
+}
+.more-group > .label {
+  grid-column: 1 / span 3;
+  padding-top: 5px;
+}
+.more-list {
+  grid-column: 4 / span 9;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 36px 40px;
+}
+.more-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: inherit;
+}
+.more-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.more-top strong {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+  transition: text-decoration-color 0.18s ease;
+}
+.more-top span {
+  font: 500 12px/1 var(--mono);
+  color: var(--ink-3);
+}
+.more-line {
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.more-meta {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font: 500 12px/1.4 var(--mono);
+  color: var(--ink-3);
+}
+/* Grid items size to their content by default; min-width 0 lets the long install commands scroll inside their
+   box instead of widening the page. */
+.more-list > li,
+.more-card,
+.more-actions,
+.install {
+  min-width: 0;
+}
+.more-actions {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+}
+.more-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  font: 500 13px/1 var(--mono);
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+  transition: text-decoration-color 0.18s ease;
+}
+.more-link .ic {
+  transition: transform 0.2s var(--ease);
+}
+.more-link:hover {
+  text-decoration-color: var(--accent);
+}
+.more-link:hover .ic {
+  transform: translateX(4px);
+}
+.more-link .ic-down {
+  transform: rotate(90deg);
+}
+.more-link:hover .ic-down {
+  transform: rotate(90deg) translateX(3px);
+}
+/* The install block: the exact commands in a box with a copy button, what it needs, and a ZIP. */
+.install {
+  width: 100%;
+  display: grid;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line-2);
+}
+.install-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.install-code {
+  margin: 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: var(--solid);
+  color: var(--on-solid);
+  font: 500 12.5px/1.6 var(--mono);
+}
+.install-copy {
+  min-width: 64px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  font: 500 12px/1 var(--mono);
+  color: var(--ink-2);
+  transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+}
+.install-copy:hover {
+  color: var(--on-accent);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.install-needs {
+  font-size: 13.5px;
+  color: var(--ink-3);
+}
+
+.gallery {
+  max-width: 760px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.gallery figure {
+  margin: 0;
+}
+.gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 10px;
+  background: var(--bg-2);
+  transition: transform 0.3s var(--ease);
+}
+.gallery li:hover img {
+  transform: translateY(-4px);
+}
+.gallery figcaption {
+  margin-top: 10px;
+}
+
+@media (max-width: 760px) {
+  .more-group {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .more-group > .label,
+  .more-list {
+    grid-column: 1;
+  }
+  .more-list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

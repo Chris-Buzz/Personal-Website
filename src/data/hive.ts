@@ -1,8 +1,8 @@
 // The guide's public knowledge: one node per project plus the facts it may cite.
 // Edges link related nodes so retrieval can pull in neighbours.
-import { PROJECTS, EXPERIENCE, PAPER, RECALL } from './content';
+import { PROJECTS, EXPERIENCE, PAPER, RECALL, MORE } from './content';
 
-export type NodeType = 'project' | 'post' | 'skill' | 'life';
+export type NodeType = 'project' | 'work' | 'post' | 'skill' | 'life';
 export interface HiveNode {
   label: string;
   type: NodeType;
@@ -15,8 +15,16 @@ const projectNodes: HiveNode[] = PROJECTS.map((p) => ({
   desc: [p.summary, ...p.problem, ...p.how.map((s) => `${s.h}: ${s.p}`), `Status: ${p.status.label}.`].join(' '),
 }));
 
+// Smaller projects, work at IBM, and the skills and tools Chris built, from the Work page.
+const moreNodes: HiveNode[] = MORE.map((m) => ({
+  label: m.title,
+  type: m.kind === 'Skill or tool' ? 'skill' : 'work',
+  desc: `${m.line} ${m.kind}, ${m.year}. Built with ${m.tags.join(', ')}. Status: ${m.status.label}.`,
+}));
+
 export const nodes: HiveNode[] = [
   ...projectNodes,
+  ...moreNodes,
   {
     label: 'LearnAI paper',
     type: 'post',
@@ -25,9 +33,9 @@ export const nodes: HiveNode[] = [
   {
     label: 'Recall evaluation',
     type: 'skill',
-    desc: `Brain is measured with ${RECALL.questions} real questions and ${RECALL.unrelated} unrelated prompts. Hybrid recall went from ${RECALL.before} to ${RECALL.after} hit in the top 4 after adding date and tool awareness (${RECALL.measured}). Graph expansion scored lower and was left out.`,
+    desc: `Common Memory is measured with ${RECALL.questions} real questions and ${RECALL.unrelated} unrelated prompts. Hybrid recall went from ${RECALL.before} to ${RECALL.after} hit in the top 4 after adding date and tool awareness (${RECALL.measured}). Graph expansion scored lower and was left out.`,
   },
-  { label: 'Local AI', type: 'skill', desc: 'Brain embeds and answers with models running in Ollama on Chris’s PC. Planno can use Apple’s on-device model.' },
+  { label: 'Local AI', type: 'skill', desc: 'Common Memory embeds and answers with models running in Ollama on Chris’s PC. Planno can use Apple’s on-device model.' },
   { label: 'React', type: 'skill', desc: 'Used for this portfolio and the LearnAI booking site.' },
   { label: 'Expo', type: 'skill', desc: 'Used for the Buzz Off and Planno iPhone apps.' },
   {
@@ -48,7 +56,7 @@ export const nodes: HiveNode[] = [
   {
     label: 'Digby history',
     type: 'life',
-    desc: 'Digby was a broader personal-assistant project that Chris shelved on November 1, 2026. Its memory work became Brain. This guide is not connected to his private vault.',
+    desc: 'Digby was a broader personal-assistant project that Chris shelved on November 1, 2026. Its memory work became Common Memory. This guide is not connected to his private vault.',
   },
 ];
 
@@ -59,9 +67,9 @@ const at = (label: string) => {
 };
 
 export const edges: [number, number][] = [
-  [at('Brain'), at('Recall evaluation')],
-  [at('Brain'), at('Local AI')],
-  [at('Brain'), at('Digby history')],
+  [at('Common Memory'), at('Recall evaluation')],
+  [at('Common Memory'), at('Local AI')],
+  [at('Common Memory'), at('Digby history')],
   [at('LearnAI'), at('LearnAI paper')],
   [at('LearnAI'), at('React')],
   [at('LearnAI'), at('Monmouth')],

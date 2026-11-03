@@ -20,9 +20,11 @@ export default function Footer() {
           <span>© {new Date().getFullYear()} {PROFILE.name}</span>
           <nav aria-label="Elsewhere">
             <Link to="/work">Work</Link>
+            <Link to="/map">Map</Link>
             <Link to="/about">About</Link>
             <a href={PROFILE.github} target="_blank" rel="noreferrer">GitHub</a>
             <a href={PROFILE.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+            <a href="/llms.txt" title="A plain-text map of this site for AI agents">For AI agents</a>
             <button onClick={toggle}>{theme === 'dark' ? 'Light' : 'Dark'} mode</button>
           </nav>
           <span>{PROFILE.location}</span>

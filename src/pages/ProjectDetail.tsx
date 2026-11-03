@@ -4,7 +4,22 @@ import { Icon } from '../components/IconSprite';
 import BrainDiagram from '../components/BrainDiagram';
 import RecallResults from '../components/RecallResults';
 import { useGuide } from '../context/GuideContext';
-import { PROJECTS, type Evidence, type Project } from '../data/content';
+import { PROJECTS, type Evidence, type Picture, type Project } from '../data/content';
+
+function Gallery({ pictures }: { pictures: Picture[] }) {
+  return (
+    <ul className="gallery">
+      {pictures.map((g) => (
+        <li key={g.src}>
+          <figure>
+            <img src={g.src} alt={g.alt} width={g.width} height={g.height} loading="lazy" decoding="async" />
+            <figcaption className="label">{g.caption}</figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 function Section({ n, label, children }: { n: number; label: string; children: React.ReactNode }) {
   const id = label.toLowerCase().replace(/[^a-z]+/g, '-');
@@ -65,7 +80,7 @@ export default function ProjectDetail() {
   if (idx < 0) return <Navigate to="/work" replace />;
   const p = PROJECTS[idx];
   const next = PROJECTS[(idx + 1) % PROJECTS.length];
-  const isBrain = p.slug === 'brain';
+  const isBrain = p.slug === 'common-memory';
 
   let n = 0;
   return (
@@ -90,11 +105,17 @@ export default function ProjectDetail() {
           ))}
         </dl>
         <div className="cs-actions">
-          {p.links.map((l) => (
-            <a key={l.href} className="btn btn-solid" href={l.href} target="_blank" rel="noopener noreferrer">
-              {l.label} <Icon name="ext" />
-            </a>
-          ))}
+          {p.links.map((l) =>
+            'to' in l ? (
+              <Link key={l.to} className="btn btn-solid" to={l.to}>
+                {l.label} <Icon name="arrow" className="ic-arrow" />
+              </Link>
+            ) : (
+              <a key={l.href} className="btn btn-solid" href={l.href} target="_blank" rel="noopener noreferrer">
+                {l.label} <Icon name="ext" />
+              </a>
+            )
+          )}
           <button className="btn btn-line" onClick={() => ask(p.ask)}>
             Ask the guide about {p.title}
           </button>
@@ -130,9 +151,10 @@ export default function ProjectDetail() {
           </ol>
         </Section>
 
-        {p.evidence && (
-          <Section n={++n} label={evidenceLabel(p)}>
-            <EvidenceBlock evidence={p.evidence} />
+        {(p.evidence || p.gallery) && (
+          <Section n={++n} label={p.evidence ? evidenceLabel(p) : 'Pictures'}>
+            {p.evidence && <EvidenceBlock evidence={p.evidence} />}
+            {p.gallery && <Gallery pictures={p.gallery} />}
           </Section>
         )}
 

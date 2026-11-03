@@ -11,6 +11,8 @@ export interface Retrieved {
   context: string;
   /** labels for the sources line shown under the reply */
   sources: string | null;
+  /** labels of every note sent as context, best match first; the brain map fires these */
+  ids: string[];
 }
 
 const STOP = new Set([
@@ -53,13 +55,14 @@ export function retrieve(query: string): Retrieved {
   return {
     context: [...picked].map((i) => `- ${nodes[i].label} [${nodes[i].type}]: ${nodes[i].desc}`).join('\n'),
     sources: scored.length ? scored.map((x) => nodes[x.i].label).join(' · ') : 'project notes',
+    ids: [...picked].map((i) => nodes[i].label),
   };
 }
 
 /* ── GenUI protocol ────────────────────────────────────────────────────── */
 
-export const DIGBY_ROUTES = new Set(['/', '/work', '/about']);
-/** Routes a reply may link to: the three pages, /work/<slug> case studies, and
+export const DIGBY_ROUTES = new Set(['/', '/work', '/about', '/map']);
+/** Routes a reply may link to: the four pages, /work/<slug> case studies, and
  *  legacy /work?p=<slug> deep links. Anything else gets dropped. */
 export const isDigbyRoute = (to: string) =>
   DIGBY_ROUTES.has(to) || /^\/work\/[a-z0-9-]+$/.test(to) || /^\/work\?p=[a-z0-9-]+$/.test(to);

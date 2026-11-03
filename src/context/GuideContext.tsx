@@ -20,6 +20,8 @@ interface GuideApi {
   live: boolean | null;
   /** Open the panel and answer a question (used by buttons across the site). */
   ask: (query: string) => void;
+  /** The notes looked up for the latest question, best match first; `at` changes with every question. */
+  recall: { ids: string[]; at: number } | null;
 }
 
 const GuideContext = createContext<GuideApi>({
@@ -30,12 +32,13 @@ const GuideContext = createContext<GuideApi>({
   busy: false,
   live: null,
   ask: () => {},
+  recall: null,
 });
 
 const GREETING: ChatMessage = {
   id: 0,
   who: 'bot',
-  text: 'Ask about Chris’s projects or experience. I answer from this site’s public notes only, not from his private Brain vault.',
+  text: 'Ask about Chris’s projects or experience. I answer from this site’s public notes only, not from his private notes.',
 };
 
 export function GuideProvider({ children }: { children: React.ReactNode }) {
@@ -44,6 +47,7 @@ export function GuideProvider({ children }: { children: React.ReactNode }) {
   const [typing, setTyping] = useState(false);
   const [busy, setBusy] = useState(false);
   const [live, setLive] = useState<boolean | null>(null);
+  const [recall, setRecall] = useState<GuideApi['recall']>(null);
   const idRef = useRef(1);
   const msgsRef = useRef<ChatMessage[]>(messages);
   msgsRef.current = messages;
@@ -53,6 +57,7 @@ export function GuideProvider({ children }: { children: React.ReactNode }) {
     if (!q) return;
     setOpen(true);
     const ret = retrieve(q);
+    setRecall({ ids: ret.ids, at: Date.now() });
     const history = msgsRef.current.slice(-8).map(({ who, text }) => ({ who, text }));
     setMessages((m) => [...m, { id: idRef.current++, who: 'user', text: q }]);
     setTyping(true);
@@ -93,7 +98,10 @@ export function GuideProvider({ children }: { children: React.ReactNode }) {
     })();
   }, []);
 
-  const value = useMemo(() => ({ open, setOpen, messages, typing, busy, live, ask }), [open, messages, typing, busy, live, ask]);
+  const value = useMemo(
+    () => ({ open, setOpen, messages, typing, busy, live, ask, recall }),
+    [open, messages, typing, busy, live, ask, recall]
+  );
   return <GuideContext.Provider value={value}>{children}</GuideContext.Provider>;
 }
 

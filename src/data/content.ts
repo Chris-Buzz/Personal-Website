@@ -19,6 +19,7 @@ export const PROFILE = {
 
 export const NAV = [
   { to: '/work', label: 'Work', icon: 'grid' },
+  { to: '/map', label: 'Map', icon: 'map' },
   { to: '/about', label: 'About', icon: 'user' },
 ];
 
@@ -33,7 +34,6 @@ export const NEWS = {
 
 export const HERO = {
   eyebrow: 'Solo developer · Computer science at Monmouth University',
-  lead: 'I build AI people can rely on.',
   detail:
     'My own products, plus websites and tools for small businesses and family who don’t have them. Each one fits the tools people already use, gets measured before anyone trusts it, and keeps data where it belongs.',
 };
@@ -42,13 +42,13 @@ export const NOW = {
   when: 'November 2026',
   items: [
     { to: '/work/learnai', title: 'LearnAI paper', body: 'Co-authored, at SIGCSE Virtual 2026. Live session November 12 to 15.' },
-    { to: '/work/brain', title: 'Brain', body: 'One memory for every AI tool I use, measured with a 36-case recall test.' },
+    { to: '/work/common-memory', title: 'Common Memory', body: 'One memory for every AI tool I use, measured with a 36-case recall test.' },
     { to: '/work/buzzoff', title: 'Buzz Off', body: 'My senior project, a party game where phones are the controllers.' },
   ],
 };
 
 export const CONTEXT = [
-  { k: 'Building', v: 'Brain, Buzz Off, Planno' },
+  { k: 'Building', v: 'Common Memory, Buzz Off, Planno' },
   { k: 'Research', v: 'LearnAI, Monmouth University' },
   { k: 'Previously', v: 'IBM z/OSMF, summer 2026' },
   { k: 'Based in', v: 'Monmouth County, NJ' },
@@ -76,7 +76,7 @@ export const PRINCIPLES: Principle[] = [
     why: 'A tool in a separate tab gets forgotten. It has to show up inside the editor, the test suite or the chat people already use.',
     proof: [
       { src: 'IBM', lead: 'A custom mode for Bob,', text: 'IBM’s AI coding agent, that walks developers through writing functional verification tests.', to: '/about' },
-      { src: 'Brain', lead: 'One memory', text: 'gathered from Claude Code, Codex, Cursor, Antigravity and Gemini, handed back to whichever one I use.', to: '/work/brain' },
+      { src: 'Common Memory', lead: 'One memory', text: 'gathered from Claude Code, Codex, Cursor, Antigravity and Gemini, handed back to whichever one I use.', to: '/work/common-memory' },
     ],
   },
   {
@@ -84,7 +84,7 @@ export const PRINCIPLES: Principle[] = [
     h: 'Measure it before trusting it.',
     why: 'A demo that worked once proves very little. A fixed test set shows whether a change helped or only felt like it did.',
     proof: [
-      { src: 'Brain', lead: '81.3% to 100%', text: 'hit in the top 4 on a 36-case recall test. Graph RAG scored lower and stayed out.', to: '/work/brain' },
+      { src: 'Common Memory', lead: '81.3% to 100%', text: 'hit in the top 4 on a 36-case recall test. Graph RAG scored lower and stayed out.', to: '/work/common-memory' },
       { src: 'IBM', lead: 'Functional verification tests', text: 'for the z/OSMF REST APIs.', to: '/about' },
     ],
   },
@@ -94,7 +94,7 @@ export const PRINCIPLES: Principle[] = [
     why: 'The model drafts. A person frames the problem, checks the output and owns the decision.',
     proof: [
       { src: 'LearnAI', lead: 'Five stages per session,', text: 'from framing the problem to verification, ending in ethical reflection.', to: '/work/learnai' },
-      { src: 'Brain', lead: 'Dated, sourced notes.', text: 'A newer decision supersedes an older one instead of erasing it.', to: '/work/brain' },
+      { src: 'Common Memory', lead: 'Dated, sourced notes.', text: 'A newer decision supersedes an older one instead of erasing it.', to: '/work/common-memory' },
     ],
   },
   {
@@ -103,7 +103,7 @@ export const PRINCIPLES: Principle[] = [
     why: 'Run the smallest model that does the job, as close to the data as possible, and refuse to move what should stay put.',
     proof: [
       { src: 'Planno', lead: 'SQLite on the iPhone', text: 'holds everything a person writes. A cloud model is opt-in, with their own key.', to: '/work/planno' },
-      { src: 'Brain', lead: 'Local models', text: 'for embeddings and answers. A sync refuses anything that looks like a secret.', to: '/work/brain' },
+      { src: 'Common Memory', lead: 'Local models', text: 'for embeddings and answers. A sync refuses anything that looks like a secret.', to: '/work/common-memory' },
     ],
   },
 ];
@@ -135,7 +135,8 @@ export interface Project {
   tags: string[];
   tagline: string;
   meta: { k: string; v: string }[];
-  links: { label: string; href: string }[];
+  /** `href` opens another site in a new tab; `to` is a page on this one */
+  links: ({ label: string; href: string } | { label: string; to: string })[];
   /** shown where a repo or live link would normally go */
   note?: string;
   problem: string[];
@@ -145,13 +146,25 @@ export interface Project {
   standing: { item: string; state: string; tone: Tone }[];
   /** prompt for the portfolio guide */
   ask: string;
+  /** other words that should find this project in the guide's saved replies */
+  aliases?: string[];
+  /** real images from the project, shown under "How it works" */
+  gallery?: Picture[];
+}
+
+export interface Picture {
+  src: string;
+  alt: string;
+  caption: string;
+  width: number;
+  height: number;
 }
 
 export const PROJECTS: Project[] = [
   {
-    slug: 'brain',
+    slug: 'common-memory',
     num: '01',
-    title: 'Brain',
+    title: 'Common Memory',
     year: '2026',
     status: { label: 'In daily use', tone: 'live' },
     summary: 'One memory for every AI tool I use. Local retrieval, measured with a test set, with guardrails that keep secrets out.',
@@ -165,6 +178,7 @@ export const PROJECTS: Project[] = [
       { k: 'Built with', v: 'Node.js, LanceDB, Ollama, Markdown in Git' },
     ],
     links: [],
+    aliases: ['memory'],
     note: 'The code is private by choice, so this page explains it with a diagram instead of a repo link. No vault contents appear here.',
     problem: [
       'I use five AI tools on my PC (Claude Code, Codex, Cursor, Antigravity and Gemini) plus ChatGPT and Claude.ai in the browser. Each keeps its own memory or none, so a decision made in one is invisible to the next, and I kept explaining the same project again.',
@@ -212,7 +226,7 @@ export const PROJECTS: Project[] = [
       },
       {
         h: 'Dropped the persona.',
-        p: 'Brain is the useful part of Digby, a personal-assistant project I shelved on November 1, 2026. I kept the memory problem and dropped the character.',
+        p: 'Common Memory is the useful part of Digby, a personal-assistant project I shelved on November 1, 2026. I kept the memory problem and dropped the character.',
       },
     ],
     standing: [
@@ -222,7 +236,7 @@ export const PROJECTS: Project[] = [
       { item: 'Reranker and graph expansion', state: 'Measured, not needed at this size', tone: 'planned' },
       { item: 'Public release', state: 'Not planned', tone: 'planned' },
     ],
-    ask: 'How does Brain work, and how was it measured?',
+    ask: 'How does Common Memory work, and how was it measured?',
   },
   {
     slug: 'learnai',
@@ -329,6 +343,29 @@ export const PROJECTS: Project[] = [
       height: 724,
       caption: 'Bowling artwork from the game',
     },
+    gallery: [
+      {
+        src: '/projects/buzzoff/lane.webp',
+        alt: 'An empty bowling lane of polished wood with ten pins at the end and a glowing orange crown above them.',
+        caption: 'The alley',
+        width: 640,
+        height: 960,
+      },
+      {
+        src: '/projects/buzzoff/golf.webp',
+        alt: 'A round green character in a golf-ball cap lining up a putt beside the flag.',
+        caption: 'Golf',
+        width: 533,
+        height: 724,
+      },
+      {
+        src: '/projects/buzzoff/cast.webp',
+        alt: 'Eight round characters piled together, each dressed for a sport: basketball, golf, bowling, baseball and more.',
+        caption: 'The cast',
+        width: 512,
+        height: 847,
+      },
+    ],
     decisions: [
       { h: 'Three games done properly first.', p: 'Bowling, golf and Hot Lap each have to be great from start to finish before more games get added. A few easy party games come next.' },
       { h: 'The TV is a web page.', p: 'Any screen with a browser can be the TV, so there is nothing to install on it.' },
@@ -393,6 +430,129 @@ export const PROJECTS: Project[] = [
 
 export const projectBySlug = (slug: string) => PROJECTS.find((p) => p.slug === slug);
 
+/* -- more work: smaller projects, work at IBM, and the skills and tools I built ------ */
+
+export type MoreKind = 'Project' | 'At IBM' | 'Skill or tool';
+
+export interface MoreItem {
+  id: string;
+  title: string;
+  kind: MoreKind;
+  year: string;
+  line: string;
+  tags: string[];
+  status: { label: string; tone: Tone };
+  /** `href` opens another site in a new tab; `to` is a page on this one */
+  link?: { label: string; href: string } | { label: string; to: string };
+  /** how a visitor installs or downloads it */
+  install?: Install;
+}
+
+export type Install =
+  /** a Claude Code plugin from the skills marketplace below */
+  | { kind: 'plugin'; plugin: string; needs: string }
+  /** a public repo: clone it or download it as a ZIP */
+  | { kind: 'repo'; repo: string; branch: string };
+
+/** The public Claude Code plugin marketplace for Chris's skills. */
+export const SKILLS = {
+  repo: 'Chris-Buzz/claude-skills',
+  marketplace: 'chris-buzz',
+  /** Flip to true once the repo is public on GitHub; until then the site hides the plugin install commands. */
+  published: false,
+};
+
+export const pluginCommands = (plugin: string) => [
+  `/plugin marketplace add ${SKILLS.repo}`,
+  `/plugin install ${plugin}@${SKILLS.marketplace}`,
+];
+export const repoZip = (repo: string, branch: string) => `https://github.com/${repo}/archive/refs/heads/${branch}.zip`;
+
+// Sources, checked 2026-11-02: Murmur from its repo README (vault hub), RollCallQR from the README and commit
+// history of Chris-Buzz/Teaching_Management_System, buzz-and-ink from its public repo, IBM from EXPERIENCE below,
+// the skills and the bridge from their own files and creation dates in Chris's Claude config.
+export const MORE: MoreItem[] = [
+  {
+    id: 'murmur',
+    title: 'Murmur',
+    kind: 'Project',
+    year: '2026',
+    line: 'Dictation that runs on my own PC. Hold a hotkey and speak, and whisper turns it into text on the GPU, a local model tidies it up, and it pastes where the cursor is. No cloud and no account. Built on Handy by CJ Pais.',
+    tags: ['Rust', 'Tauri', 'whisper', 'Ollama'],
+    status: { label: 'In development', tone: 'progress' },
+  },
+  {
+    id: 'rollcallqr',
+    title: 'RollCallQR',
+    kind: 'Project',
+    year: '2025',
+    line: 'Attendance by QR code. A teacher opens a fresh code for each class session, students scan it to check in without logging in, and the teacher gets per-student reports and a CSV export.',
+    tags: ['Flask', 'PostgreSQL', 'Supabase', 'Vercel'],
+    status: { label: 'Built in November 2025', tone: 'live' },
+  },
+  {
+    id: 'bob-mode',
+    title: 'A test-writing mode for Bob',
+    kind: 'At IBM',
+    year: '2026',
+    line: 'Helped build a custom mode for Bob, IBM’s AI coding agent, that walks developers through the full test-generation process. I also led a team workshop on getting more out of Bob.',
+    tags: ['Bob', 'Test generation', 'z/OSMF'],
+    status: { label: 'Summer 2026', tone: 'live' },
+    link: { label: 'Experience', to: '/about' },
+  },
+  {
+    id: 'generative-ui',
+    title: 'Generative UI prototypes',
+    kind: 'At IBM',
+    year: '2026',
+    line: 'Prototyped generative UI features with the Vercel AI SDK on local models, where the model answers with interface pieces instead of only text.',
+    tags: ['Vercel AI SDK', 'Local models'],
+    status: { label: 'Summer 2026', tone: 'live' },
+    link: { label: 'Experience', to: '/about' },
+  },
+  {
+    id: 'my-design',
+    title: '/my-design',
+    kind: 'Skill or tool',
+    year: '2026',
+    line: 'My design process as a Claude Code skill. It researches the people a product is for, drafts a design system with me, has ChatGPT draw four concepts I pick from, builds a board of every page, then runs design and accessibility reviews.',
+    tags: ['Claude Code skill', 'Design systems'],
+    status: { label: 'In use since October 2026', tone: 'live' },
+    install: { kind: 'plugin', plugin: 'my-design', needs: 'Claude Code. The concept step uses the ChatGPT bridge.' },
+  },
+  {
+    id: 'council',
+    title: 'Council',
+    kind: 'Skill or tool',
+    year: '2026',
+    line: 'A review with three kinds of reviewer. Fresh Claude reviewers, Codex and Gemini read the same packet without seeing each other’s notes, and every finding is checked against the source before it counts. It reports and never edits.',
+    tags: ['Claude Code skill', 'Codex', 'Gemini'],
+    status: { label: 'Built November 2026', tone: 'live' },
+    install: { kind: 'plugin', plugin: 'council', needs: 'Claude Code, plus the Codex and Antigravity command-line tools for the outside reviewers.' },
+  },
+  {
+    id: 'chatgpt-bridge',
+    title: 'ChatGPT bridge',
+    kind: 'Skill or tool',
+    year: '2026',
+    line: 'An MCP server that lets Claude Code use my own ChatGPT in a visible Chrome window, for a second opinion or concept art. It hands back text and file paths instead of whole pages, so a round trip costs a few hundred tokens.',
+    tags: ['MCP', 'Node.js', 'Playwright'],
+    status: { label: 'In use since October 2026', tone: 'live' },
+    install: { kind: 'plugin', plugin: 'chatgpt-bridge', needs: 'Claude Code, Node.js, Chrome and your own ChatGPT account. Run npm install once in the plugin folder.' },
+  },
+  {
+    id: 'buzz-and-ink',
+    title: 'Buzz & Ink',
+    kind: 'Skill or tool',
+    year: '2026',
+    line: 'My design system in plain CSS with no dependencies: tokens and components, with forced-colors fallbacks and status that never relies on colour alone. This site uses its second version.',
+    tags: ['CSS', 'Design tokens'],
+    status: { label: 'Public on GitHub', tone: 'live' },
+    link: { label: 'GitHub', href: 'https://github.com/Chris-Buzz/buzz-and-ink' },
+    install: { kind: 'repo', repo: 'Chris-Buzz/buzz-and-ink', branch: 'main' },
+  },
+];
+
 /* -- Brain recall results (node scripts/brain.mjs eval --mode all) ------ */
 
 export const RECALL = {
@@ -403,10 +563,10 @@ export const RECALL = {
   measured: 'November 1, 2026',
   rerun: 'November 2, 2026',
   rows: [
-    { name: 'Words only', detail: 'BM25 keyword ranking', hit: 87.5, mrr: 0.764 },
+    { name: 'Words only', detail: 'BM25 keyword ranking', hit: 90.6, mrr: 0.776 },
     { name: 'Meaning only', detail: 'nomic-embed-text vectors', hit: 87.5, mrr: 0.76 },
-    { name: 'Hybrid', detail: 'Meaning first, words break ties', hit: 100, mrr: 0.872, chosen: true },
-    { name: 'Hybrid plus graph', detail: 'Adds one hop along note links', hit: 93.8, mrr: 0.858 },
+    { name: 'Hybrid', detail: 'Meaning first, words break ties', hit: 100, mrr: 0.867, chosen: true },
+    { name: 'Hybrid plus graph', detail: 'Adds one hop along note links', hit: 93.8, mrr: 0.853 },
   ],
   hookFound: '93.8%',
   hookFalseAlarms: '0',

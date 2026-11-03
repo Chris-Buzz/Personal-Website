@@ -1,15 +1,18 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useGuide } from '../context/GuideContext';
+import BeeVisit from '../components/BeeVisit';
 import { Icon } from '../components/IconSprite';
 import WorkRows from '../components/WorkRows';
 import { CONTEXT, HERO, NOW, PRINCIPLES, PROFILE } from '../data/content';
 
 export default function Home() {
   const { ask } = useGuide();
+  const heroRef = useRef<HTMLElement>(null);
   return (
     <>
       <div className="wrap">
-        <section className="hero" aria-labelledby="hero-name">
+        <section className="hero" aria-labelledby="hero-name" ref={heroRef}>
           <div className="hero-main">
             <p className="label">{HERO.eyebrow}</p>
             <h1 className="name" id="hero-name">
@@ -30,16 +33,15 @@ export default function Home() {
                 </span>
               </span>
             </h1>
-            <p className="hero-lead">{HERO.lead}</p>
             <p className="hero-detail">{HERO.detail}</p>
             <div className="hero-actions">
-              <Link className="btn btn-solid" to="/work">
+              <Link className="btn btn-solid" to="/work" data-perch>
                 See the work <Icon name="arrow" />
               </Link>
-              <button className="btn btn-line" onClick={() => ask('What should I look at first?')}>
+              <button className="btn btn-line" onClick={() => ask('What should I look at first?')} data-perch>
                 <Icon name="chat" /> Ask the guide
               </button>
-              <a className="btn btn-line" href={`mailto:${PROFILE.email}`}>
+              <a className="btn btn-line" href={`mailto:${PROFILE.email}`} data-perch>
                 Email me
               </a>
             </div>
@@ -51,13 +53,15 @@ export default function Home() {
               <span>{NOW.when}</span>
             </div>
             {NOW.items.map((n) => (
-              <Link key={n.to} to={n.to}>
+              <Link key={n.to} to={n.to} data-perch="accent">
                 <strong>{n.title}</strong>
                 <span>{n.body}</span>
                 <Icon name="arrow" />
               </Link>
             ))}
           </aside>
+
+          <BeeVisit heroRef={heroRef} />
         </section>
 
         <dl className="context">

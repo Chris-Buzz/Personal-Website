@@ -16,6 +16,10 @@ export default function IconSprite() {
         <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round"><circle cx="12" cy="8" r="4" /><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" /></symbol>
         {/* Buzz, the bee: the home button and the mark that lands as the period after the name */}
         <symbol id="i-bee" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><ellipse cx="10" cy="8.4" rx="4.5" ry="2.9" transform="rotate(-26 10 8.4)" /><ellipse cx="22" cy="8.4" rx="4.5" ry="2.9" transform="rotate(26 22 8.4)" /><path d="M16 11.5L21.8 14.8V23.2L16 26.5L10.2 23.2V14.8L16 11.5Z" /><path d="M11.7 17.5H20.3" /><path d="M12.6 21.2H19.4" /></symbol>
+        {/* Map: three linked nodes, the map's nav icon */}
+        <symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round"><circle cx="6" cy="7" r="2.5" /><circle cx="18" cy="9" r="2.5" /><circle cx="11" cy="18" r="2.5" /><path d="M8.4 7.5l7.2 1M7.2 9.2l2.6 6.6M16.6 11l-4.2 5" /></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round"><circle cx="10.5" cy="10.5" r="6" /><path d="M15 15l5 5" /></symbol>
+        <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="M6.5 9.5L12 15l5.5-5.5" /></symbol>
         <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2.5 21.5z" /></symbol>
       </defs>
     </svg>

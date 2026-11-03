@@ -8,8 +8,8 @@ describe('retrieve', () => {
     expect(r.context).toContain('Planno');
   });
 
-  it('expands one hop along edges (asking about Brain pulls in related tech)', () => {
-    const r = retrieve('Tell me about Brain');
+  it('expands one hop along edges (asking about Common Memory pulls in related tech)', () => {
+    const r = retrieve('Tell me about Common Memory');
     expect(r.context.split('\n').length).toBeGreaterThan(2);
   });
 

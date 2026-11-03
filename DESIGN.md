@@ -13,7 +13,7 @@ No childish or painterly 3D. Complexity belongs in choreography, never in cartoo
 ## Interactions
 
 Every motion below is in `src/styles/site.css` or the named component. Under `prefers-reduced-motion: reduce`, all
-animations and transitions stop, the bee is hidden, the orange square shows at rest, the scramble does nothing, and
+animations and transitions stop, the bee is hidden and never visits, the orange square shows at rest, the scramble does nothing, and
 the theme switch skips its view transition.
 
 | Element | Trigger | States | Duration | Easing |
@@ -21,6 +21,7 @@ the theme switch skips its view transition.
 | Name lines (Home) | page load | below the mask, then in place; second line 0.08s later | 0.9s | `cubic-bezier(0.2, 0.7, 0.2, 1)` |
 | Bee (Home) | page load, after 0.25s | flies a five-point arc from upper left, shrinks onto the square, fades | 1.5s | `cubic-bezier(0.45, 0.05, 0.2, 1)` |
 | Orange square after the name | page load, after 1.5s | scale 0.2, overshoot 1.25, rest at 1 | 0.52s | `cubic-bezier(0.16, 1, 0.3, 1)` |
+| Bee visit (Home, `BeeVisit`) | from 2.1s after load: mouse or pen over, or keyboard focus on, a hero button or Now link | square shrinks to 0; bee flies a curve to the item's top-right corner and sits still, ink on the orange panel; 0.8s after the pointer or focus leaves the hero it flies home and the square pops back | lift-off 0.16s; flight 0.55s from home, 0.4s between items, 0.6s home; pop 0.52s | lift-off `ease-in`; flights `cubic-bezier(0.45, 0.05, 0.2, 1)`; pop `cubic-bezier(0.16, 1, 0.3, 1)` |
 | Page content | route change | opacity 0 and 6px down, then in place | 0.32s | `cubic-bezier(0.2, 0.7, 0.2, 1)` |
 | News bar text (`Ticker`) | page load | random glyphs resolve left to right | 0.9s | linear, per frame |
 | Nav and guide labels (`Scramble`) | hover | random glyphs resolve left to right | 0.52s | linear, per frame |
@@ -32,8 +33,27 @@ the theme switch skips its view transition.
 | Guide panel | Ask button, Escape, click outside, Close | hidden, then visible and 6px up into place | 0.2s | `cubic-bezier(0.2, 0.7, 0.2, 1)` |
 | Guide typing dots | waiting for an answer | three dots fade in turn while a reply is pending | 1s per cycle | `ease-in-out` |
 | Theme switch | toggle | whole palette swaps at once through a view transition | browser default | browser default |
+| Map arrival (`/map`, `src/map/orbitMap.ts`) | page open | the 3D layout is worked out before the first frame, so the graph appears in place, turned a little, framed in the space left of the legend | none | none |
+| Map lean | mouse over the map | the graph turns a few degrees toward the pointer | eases in about 0.3s | exponential, per frame |
+| Map turn, pan and zoom | drag turns it; Shift-drag or two fingers pan; Ctrl or Cmd with the wheel, a pinch, or the + and - buttons zoom | the graph follows the pointer; buttons, Fit and Center ease | buttons 0.45s | ease-out cubic |
+| Map drift | 4s without input, map on screen | the graph turns slowly on its own, at most 30 frames a second | about 3deg a second | linear |
+| Map node hover | pointer over a node | it and its neighbours stay lit and labelled, their links brighten, the rest dim to 15% | next frame | none |
+| Map node click | click or tap | its card opens on the left (a sheet from the bottom on a phone); double-click or Ctrl-click opens its page | card 0.2s | `cubic-bezier(0.2, 0.7, 0.2, 1)` |
+| Map legend, search and list | press a group, type, or press List | that group or the matching notes stay lit and labelled; List opens every note as links on the left | next frame | none |
+| Map recall firing | a question to the guide | the notes it looked up flare warm white one after another, 0.15s apart, with a bright link from the previous note when they are linked and a ring that spreads once | ring 0.6s; flare holds 1.1s, then fades over 1.1s | ring ease-out cubic; fade linear |
+| Map slide | guide opens or closes, a card or the list opens, the legend folds, resize | the graph eases into the open space between the panels | about 0.3s | exponential, per frame |
+| Map nav icon | hover | three linked nodes turn -20deg | 0.4s | `cubic-bezier(0.34, 1.56, 0.64, 1)` |
 
-Touch screens never show the row cards (`@media (hover: none)`), so nothing is lost without hover.
+Touch screens never show the row cards (`@media (hover: none)`) or the bee's visits (taps are ignored), so nothing is
+lost without hover.
+
+The map page is only the map: deep space in both themes (a near-black sky, a faint orange glow and a cooler haze,
+two layers of CSS stars, the brighter one twinkling), and the graph in the site's own palette. Projects are orange,
+skills a lighter peach, and the rest white or grey, told apart by shape: circle, ring, diamond, triangle, square.
+Nodes glow and links take the colour of the node they lead to, both drawn with additive blending. A cloud of faint
+stars turns with the graph for depth. It is a 2D canvas with no WebGL, drawn only when something changes plus the
+capped drift. Under reduced motion there is no drift, lean, twinkle or ring, the view jumps instead of easing, and a
+note the guide read stays lit for 1.3s without fading. Every node is also a link in the List panel.
 
 ## Rules
 

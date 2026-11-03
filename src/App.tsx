@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import IconSprite from './components/IconSprite';
 import Header from './components/Header';
@@ -12,7 +12,10 @@ import About from './pages/About';
 import NotFound from './pages/NotFound';
 import { projectBySlug } from './data/content';
 
-const TITLES: Record<string, string> = { '/work': 'Work', '/about': 'About' };
+// The map page carries its own layout code, so it loads only when someone opens it.
+const MapPage = lazy(() => import('./pages/MapPage'));
+
+const TITLES: Record<string, string> = { '/work': 'Work', '/about': 'About', '/map': 'Map' };
 
 function titleFor(path: string) {
   if (path === '/') return 'Chris Buzaid';
@@ -59,9 +62,18 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/work" element={<Work />} />
-            <Route path="/work/digby" element={<Navigate to="/work/brain" replace />} />
+            <Route path="/work/digby" element={<Navigate to="/work/common-memory" replace />} />
+            <Route path="/work/brain" element={<Navigate to="/work/common-memory" replace />} />
             <Route path="/work/:slug" element={<ProjectDetail />} />
             <Route path="/about" element={<About />} />
+            <Route
+              path="/map"
+              element={
+                <Suspense fallback={<p className="wrap page-pad map-loading">Loading the map…</p>}>
+                  <MapPage />
+                </Suspense>
+              }
+            />
             <Route path="/hive" element={<Navigate to="/work" replace />} />
             <Route path="/thoughts" element={<Navigate to="/work" replace />} />
             <Route path="*" element={<NotFound />} />

@@ -1,0 +1,4 @@
+# Every crawler and AI agent is welcome.
+# A plain-text map of this site is at /llms.txt, the full text at /llms-full.txt, and the same facts as JSON at /site.json.
+User-agent: *
+Allow: /

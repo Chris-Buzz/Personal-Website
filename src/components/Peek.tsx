@@ -106,7 +106,7 @@ function PlannoCards() {
 }
 
 const CARDS: Record<string, () => JSX.Element> = {
-  brain: BrainCards,
+  'common-memory': BrainCards,
   learnai: LearnAICards,
   buzzoff: BuzzOffCards,
   planno: PlannoCards,

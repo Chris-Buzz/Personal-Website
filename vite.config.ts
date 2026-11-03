@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { sanitize, geminiRequest, pump } from './api/_core';
+import { agentFiles, personJsonLd } from './src/data/agentFiles';
 
 /**
  * Dev mirror of api/digby.ts so `npm run dev` gets the live Digby brain.
@@ -58,11 +59,42 @@ function digbyDevApi(env: Record<string, string>): Plugin {
   };
 }
 
+/**
+ * Files for AI agents (llms.txt, llms-full.txt, site.json), generated from src/data/content.ts so they always match
+ * the pages. Served from memory in dev; written into dist/ at build time.
+ */
+function agentFilesPlugin(): Plugin {
+  const types: Record<string, string> = { txt: 'text/markdown; charset=utf-8', json: 'application/json; charset=utf-8' };
+  return {
+    name: 'agent-files',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const name = (req.url ?? '').split('?')[0].replace(/^\//, '');
+        const files = agentFiles();
+        if (!(name in files)) return next();
+        res.setHeader('Content-Type', types[name.split('.').pop()!]);
+        res.end(files[name]);
+      });
+    },
+    generateBundle() {
+      for (const [fileName, source] of Object.entries(agentFiles())) this.emitFile({ type: 'asset', fileName, source });
+    },
+    // Points agents at the files from every page's head, and adds schema.org data about Chris.
+    transformIndexHtml() {
+      return [
+        { tag: 'link', attrs: { rel: 'alternate', type: 'text/markdown', title: 'For AI agents', href: '/llms.txt' }, injectTo: 'head' },
+        { tag: 'link', attrs: { rel: 'alternate', type: 'application/json', title: 'Site data', href: '/site.json' }, injectTo: 'head' },
+        { tag: 'script', attrs: { type: 'application/ld+json' }, children: JSON.stringify(personJsonLd()), injectTo: 'head' },
+      ];
+    },
+  };
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
-    plugins: [react(), digbyDevApi(env)],
+    plugins: [react(), digbyDevApi(env), agentFilesPlugin()],
     server: { port: 5173, open: true },
   };
 });
